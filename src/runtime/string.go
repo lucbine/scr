@@ -159,7 +159,7 @@ func slicebytetostringtmp(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-func stringtoslicebyte(buf *tmpBuf, s string) []byte {
+func stringtoslicebyte(buf *tmpBuf, s string) []byte { //string 转 slice
 	var b []byte
 	if buf != nil && len(s) <= len(buf) {
 		*buf = tmpBuf{}
@@ -167,7 +167,7 @@ func stringtoslicebyte(buf *tmpBuf, s string) []byte {
 	} else {
 		b = rawbyteslice(len(s))
 	}
-	copy(b, s)
+	copy(b, s) //深度复制
 	return b
 }
 
@@ -193,9 +193,9 @@ func stringtoslicerune(buf *[tmpStringBufSize]rune, s string) []rune {
 		n++
 	}
 	return a
-}
+} //string 转 []rune
 
-func slicerunetostring(buf *tmpBuf, a []rune) string {
+func slicerunetostring(buf *tmpBuf, a []rune) string { //[]rune 转 string
 	if raceenabled && len(a) > 0 {
 		racereadrangepc(unsafe.Pointer(&a[0]),
 			uintptr(len(a))*unsafe.Sizeof(a[0]),
@@ -237,7 +237,7 @@ func stringStructOf(sp *string) *stringStruct { //字符串与stringStruct 结�
 	return (*stringStruct)(unsafe.Pointer(sp))
 }
 
-func intstring(buf *[4]byte, v int64) (s string) {
+func intstring(buf *[4]byte, v int64) (s string) { //int64 转 string
 	if v >= 0 && v < runeSelf {
 		stringStructOf(&s).str = unsafe.Pointer(&staticbytes[v])
 		stringStructOf(&s).len = 1
@@ -262,19 +262,19 @@ func intstring(buf *[4]byte, v int64) (s string) {
 // string and byte slice both refer to the same storage.
 // The storage is not zeroed. Callers should use
 // b to set the string contents and then drop b.
-func rawstring(size int) (s string, b []byte) {
-	p := mallocgc(uintptr(size), nil, false)
+func rawstring(size int) (s string, b []byte) { //申请一个string 和 slice 类型的空间  两者共享同一块内存
+	p := mallocgc(uintptr(size), nil, false) //申请size  大小的内存空间
 
 	stringStructOf(&s).str = p
-	stringStructOf(&s).len = size
+	stringStructOf(&s).len = size //构建string
 
-	*(*slice)(unsafe.Pointer(&b)) = slice{p, size, size}
+	*(*slice)(unsafe.Pointer(&b)) = slice{p, size, size} //slice 指向构造的新地址
 
 	return
 }
 
 // rawbyteslice allocates a new byte slice. The byte slice is not zeroed.
-func rawbyteslice(size int) (b []byte) {
+func rawbyteslice(size int) (b []byte) { //分配一个slice
 	cap := roundupsize(uintptr(size))
 	p := mallocgc(cap, nil, false)
 	if cap != uintptr(size) {
