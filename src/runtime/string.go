@@ -15,12 +15,19 @@ const tmpStringBufSize = 32
 
 type tmpBuf [tmpStringBufSize]byte
 
+/*
+	为什么字符串不允许修改？
+	像C++语言中的string，其本身拥有内存空间，修改string是支持的。但Go的实现中，string不包含内存空间，只有一个内存的指针，这样做的好处是string变得非常轻量，可以很方便的进行传递而不用担心内存拷贝。
+	因为string通常指向字符串字面量，而字符串字面量存储位置是只读段，而不是堆或栈上，所以才有了string不可修改的约定。
+
+*/
+
 // concatstrings implements a Go string concatenation x+y+z+...
 // The operands are passed in the slice a.
 // If buf != nil, the compiler has determined that the result does not
 // escape the calling function, so the string data can be stored in buf
 // if small enough.
-func concatstrings(buf *tmpBuf, a []string) string {
+func concatstrings(buf *tmpBuf, a []string) string { //字符串 拼接  处理 +++ 模式
 	idx := 0
 	l := 0
 	count := 0
@@ -29,7 +36,7 @@ func concatstrings(buf *tmpBuf, a []string) string {
 		if n == 0 {
 			continue
 		}
-		if l+n < l {
+		if l+n < l { //溢出
 			throw("string concatenation too long")
 		}
 		l += n
@@ -43,12 +50,12 @@ func concatstrings(buf *tmpBuf, a []string) string {
 	// If there is just one string and either it is not on the stack
 	// or our result does not escape the calling frame (buf != nil),
 	// then we can return that string directly.
-	if count == 1 && (buf != nil || !stringDataOnStack(a[idx])) {
+	if count == 1 && (buf != nil || !stringDataOnStack(a[idx])) { //如果仅仅一个字符串 并且没有分配到堆栈上  或者结果没有内存逃逸  直接返回
 		return a[idx]
 	}
-	s, b := rawstringtmp(buf, l)
+	s, b := rawstringtmp(buf, l) // 生成指定大小的字符串，返回一个string和切片，二者共享内存空间
 	for _, x := range a {
-		copy(b, x)
+		copy(b, x) //数据拷贝  string无法修改，只能通过切片修改
 		b = b[len(x):]
 	}
 	return s
@@ -115,7 +122,7 @@ func stringDataOnStack(s string) bool {
 	return stk.lo <= ptr && ptr < stk.hi
 }
 
-func rawstringtmp(buf *tmpBuf, l int) (s string, b []byte) {
+func rawstringtmp(buf *tmpBuf, l int) (s string, b []byte) { // 生成一个新的string，返回的string和切片共享相同的空间
 	if buf != nil && l <= len(buf) {
 		b = buf[:l]
 		s = slicebytetostringtmp(b)
@@ -215,9 +222,9 @@ func slicerunetostring(buf *tmpBuf, a []rune) string {
 	return s[:size2]
 }
 
-type stringStruct struct {
-	str unsafe.Pointer
-	len int
+type stringStruct struct { // string 结构体
+	str unsafe.Pointer //指向一个 字符串的首地址  unsafe.Pointer它表示任意类型且可寻址的指针值
+	len int            //字符串的长度
 }
 
 // Variant with *byte pointer type for DWARF debugging.
@@ -226,7 +233,7 @@ type stringStructDWARF struct {
 	len int
 }
 
-func stringStructOf(sp *string) *stringStruct {
+func stringStructOf(sp *string) *stringStruct { //字符串与stringStruct 结构的转换
 	return (*stringStruct)(unsafe.Pointer(sp))
 }
 
@@ -311,7 +318,7 @@ func gobytes(p *byte, n int) (b []byte) {
 }
 
 // This is exported via linkname to assembly in syscall (for Plan9).
-//go:linkname gostring
+//go:linkname gostring   //https://www.jianshu.com/p/afd6dd988c20  Go 语言编译器的 "//go:" 详解
 func gostring(p *byte) string {
 	l := findnull(p)
 	if l == 0 {
@@ -414,7 +421,7 @@ func atoi32(s string) (int32, bool) {
 }
 
 //go:nosplit
-func findnull(s *byte) int {
+func findnull(s *byte) int { //根据字符串 获得其长度
 	if s == nil {
 		return 0
 	}
@@ -469,10 +476,19 @@ func findnullw(s *uint16) int {
 	return l
 }
 
-//go:nosplit
-func gostringnocopy(str *byte) string {
-	ss := stringStruct{str: unsafe.Pointer(str), len: findnull(str)}
-	s := *(*string)(unsafe.Pointer(&ss))
+//go:nosplit   //nosplit 的作用是：跳过栈溢出检测
+/*
+栈溢出是什么？
+正是因为一个 Goroutine 的起始栈大小是有限制的，且比较小的，才可以做到支持并发很多 Goroutine，并高效调度。
+stack.go 源码中可以看到，_StackMin 是 2048 字节，也就是 2k，它不是一成不变的，当不够用时，它会动态地增长。
+那么，必然有一个检测的机制，来保证可以及时地知道栈不够用了，然后再去增长。
+回到话题，nosplit 就是将这个跳过这个机制
+优劣
+显然地，不执行栈溢出检查，可以提高性能，但同时也有可能发生 stack overflow 而导致编译失败。
+*/
+func gostringnocopy(str *byte) string { // 跟据字符串地址构建string
+	ss := stringStruct{str: unsafe.Pointer(str), len: findnull(str)} // 先构造stringStruct
+	s := *(*string)(unsafe.Pointer(&ss))                             // 再将stringStruct转换成string
 	return s
 }
 

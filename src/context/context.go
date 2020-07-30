@@ -55,6 +55,18 @@ import (
 	"time"
 )
 
+//context包就是用来传递请求维度的数据、信号、超时给处理该请求的所有协程的。在处理请求的方法调用链中，必须传递context，
+//当然也可以使用WithCancel, WithDeadline, WithTimeout或者WithValue去派生出子context来传递。当一个context被取消的时候，其派生出的所有子context都会被取消
+
+//context 的使用原则
+/*
+	1、不要把Context 放在结构体中，要以参数的方式传递
+	2、以Context 作为参数的函数方法，应该把Context作为第一个参数，放在第一位
+	3、给一个函数方法传递Context的时候，不要传递nil，如果不知道传递什么，就使用context.TODO
+	4、Context的Value相关方法应该传递必须的数据，不要什么数据都使用这个传递
+	5、Context是线程安全的，可以放心的在多个goroutine中传递  todo 怎么做到是线程安全的 ？
+*/
+
 // A Context carries a deadline, a cancellation signal, and other values across
 // API boundaries.
 //
@@ -63,6 +75,7 @@ type Context interface {
 	// Deadline returns the time when work done on behalf of this context
 	// should be canceled. Deadline returns ok==false when no deadline is
 	// set. Successive calls to Deadline return the same results.
+	//返回一个截止时间，代表这个context要到达截止时间会被取消。返回的ok如果是false表示没有设置截止时间，即不会超时
 	Deadline() (deadline time.Time, ok bool)
 
 	// Done returns a channel that's closed when work done on behalf of this
@@ -96,13 +109,16 @@ type Context interface {
 	//
 	// See https://blog.golang.org/pipelines for more examples of how to use
 	// a Done channel for cancellation.
-	Done() <-chan struct{}
+	//返回一个已经关闭的channel，表示这个context被取消了。如果这个context永远不能被取消的话，则返回nil ,一般Done的放在select语句中使用
+	Done() <-chan struct{} // 只读channel
 
 	// If Done is not yet closed, Err returns nil.
 	// If Done is closed, Err returns a non-nil error explaining why:
 	// Canceled if the context was canceled
 	// or DeadlineExceeded if the context's deadline passed.
 	// After Err returns a non-nil error, successive calls to Err return the same error.
+	//返回的err是用来说明这个context取消的原因。如果Done channel还没有关闭，Err()返回nil
+	//一般包自带的两个错误是：取消和超时
 	Err() error
 
 	// Value returns the value associated with this context for key, or nil
@@ -150,10 +166,11 @@ type Context interface {
 	// 		u, ok := ctx.Value(userKey).(*User)
 	// 		return u, ok
 	// 	}
-	Value(key interface{}) interface{}
+	Value(key interface{}) interface{} //返回保存在context中的key对应的值，如果不存在则返回nil
 }
 
 // Canceled is the error returned by Context.Err when the context is canceled.
+// Canceled  是当context 被取消的时候 Context.Err 作为一个error返回
 var Canceled = errors.New("context canceled")
 
 // DeadlineExceeded is the error returned by Context.Err when the context's
@@ -168,7 +185,7 @@ func (deadlineExceededError) Temporary() bool { return true }
 
 // An emptyCtx is never canceled, has no values, and has no deadline. It is not
 // struct{}, since vars of this type must have distinct addresses.
-type emptyCtx int
+type emptyCtx int //实现一个空的context
 
 func (*emptyCtx) Deadline() (deadline time.Time, ok bool) {
 	return
@@ -205,6 +222,7 @@ var (
 // values, and has no deadline. It is typically used by the main function,
 // initialization, and tests, and as the top-level Context for incoming
 // requests.
+//返回一个非nil非空的context，永远不会被取消，也没有value，没有deadline。一般用于main函数里，或者初始化，用作顶层的context
 func Background() Context {
 	return background
 }
@@ -213,6 +231,7 @@ func Background() Context {
 // it's unclear which Context to use or it is not yet available (because the
 // surrounding function has not yet been extended to accept a Context
 // parameter).
+//返回一个非nil非空的context。当不知道用什么context，或者还不使用context但是有这个入参的时候，可以用这个
 func TODO() Context {
 	return todo
 }
@@ -236,34 +255,40 @@ func WithCancel(parent Context) (ctx Context, cancel CancelFunc) {
 }
 
 // newCancelCtx returns an initialized cancelCtx.
+//newCancelCtx是用父context初始化一个cancelCtx对象，cancelCtx是context的一个实现类
 func newCancelCtx(parent Context) cancelCtx {
 	return cancelCtx{Context: parent}
 }
 
 // goroutines counts the number of goroutines ever created; for testing.
-var goroutines int32
+var goroutines int32 //用来记录创建了有多少个goroutine
 
 // propagateCancel arranges for child to be canceled when parent is.
+//propagateCancel顾名思义，就是传播cancel，就是保证父context结束的时候，我们用WithCancel得到的子context能够跟着结束
+/*
+然后返回这个新建的cancelCtx对象和一个CancelFunc。CancelFunc是一个函数，内部是调用了cancelCtx对象的cancel方法，这个方法的作用是关闭cancelCtx对象的done channel（代表这个context结束了），
+然后cancel这个context的所有子context，如果必要的话并切断这个context和其父context的关系（其实就是这个context的子context通过propagateCancel关联上的）
+*/
 func propagateCancel(parent Context, child canceler) {
 	done := parent.Done()
-	if done == nil {
+	if done == nil { //父context如果永远不能取消，直接返回，不用关联。
 		return // parent is never canceled
 	}
 
-	select {
+	select { //此时父节点 有没有取消
 	case <-done:
-		// parent is already canceled
+		// 父节点取消
 		child.cancel(false, parent.Err())
 		return
 	default:
 	}
 
-	if p, ok := parentCancelCtx(parent); ok {
-		p.mu.Lock()
+	if p, ok := parentCancelCtx(parent); ok { //因为传入的父context类型是Context接口，不一定是CancelCtx，所以如果要关联，则先判断类型
+		p.mu.Lock() //加锁，保护字段children
 		if p.err != nil {
-			// parent has already been canceled
+			//说明父context已经结束了，也别做其他操作了，直接取消这个子context吧
 			child.cancel(false, p.err)
-		} else {
+		} else { //没有结束，就在父context里加上子context的联系，用来之后取消子context用
 			if p.children == nil {
 				p.children = make(map[canceler]struct{})
 			}
@@ -271,12 +296,12 @@ func propagateCancel(parent Context, child canceler) {
 		}
 		p.mu.Unlock()
 	} else {
-		atomic.AddInt32(&goroutines, +1)
-		go func() {
+		atomic.AddInt32(&goroutines, +1) //goroutine  新增一个
+		go func() {                      //因为传入的父context类型不是CancelCtx，则不一定有children字段的，只能起一个协程来监听父context的Done，如果Done关闭了，就可以取消子context了。
 			select {
 			case <-parent.Done():
 				child.cancel(false, parent.Err())
-			case <-child.Done():
+			case <-child.Done(): ////为了避免子context比父context先取消，造成这个监听协程泄露，这里加了这样一个case
 			}
 		}()
 	}
@@ -317,13 +342,15 @@ func removeChild(parent Context, child canceler) {
 	}
 	p.mu.Lock()
 	if p.children != nil {
-		delete(p.children, child)
+		delete(p.children, child) //从map中删除  ，解除父子关系
 	}
 	p.mu.Unlock()
 }
 
 // A canceler is a context type that can be canceled directly. The
 // implementations are *cancelCtx and *timerCtx.
+
+//canceler  是能个被直接取消的的context 类型
 type canceler interface {
 	cancel(removeFromParent bool, err error)
 	Done() <-chan struct{}
@@ -338,13 +365,13 @@ func init() {
 
 // A cancelCtx can be canceled. When canceled, it also cancels any children
 // that implement canceler.
-type cancelCtx struct {
-	Context
+type cancelCtx struct { //cancelCtx是context的一个实现类
+	Context //指向父context的引用
 
-	mu       sync.Mutex            // protects following fields
-	done     chan struct{}         // created lazily, closed by first cancel call
-	children map[canceler]struct{} // set to nil by the first cancel call
-	err      error                 // set to non-nil by the first cancel call
+	mu       sync.Mutex            // 锁用来保护下面几个字段
+	done     chan struct{}         // 用来通知其他，代表这个context已经结束了
+	children map[canceler]struct{} // 里面保存了所有子context的联系，用来在结束当前context的时候，结束所有子context。这个字段cancel之后，设为nil。
+	err      error                 // cancel之后，就不是nil了
 }
 
 func (c *cancelCtx) Value(key interface{}) interface{} {
@@ -425,24 +452,26 @@ func (c *cancelCtx) cancel(removeFromParent bool, err error) {
 // Canceling this context releases resources associated with it, so code should
 // call cancel as soon as the operations running in this Context complete.
 func WithDeadline(parent Context, d time.Time) (Context, CancelFunc) {
+	//如果当前的Deadline比父Deadline晚，则用父Deadline，直接WithCancel就好了，因为父Deadline到了结束了，这个context也就结束了。WithCancel是为了返回一个cancelfunc。
 	if cur, ok := parent.Deadline(); ok && cur.Before(d) {
 		// The current deadline is already sooner than the new one.
 		return WithCancel(parent)
 	}
+	//可以看到，timerCtx其实就是包装了一下newCancelCtx，newCancelCtx在前文已经介绍了，这里看上去就简单多了
 	c := &timerCtx{
 		cancelCtx: newCancelCtx(parent),
 		deadline:  d,
 	}
-	propagateCancel(parent, c)
+	propagateCancel(parent, c) //propagateCancel在前文介绍过了，这里就是传播cancel
 	dur := time.Until(d)
-	if dur <= 0 {
+	if dur <= 0 { //时间到了，就直接可以cancel了
 		c.cancel(true, DeadlineExceeded) // deadline has already passed
 		return c, func() { c.cancel(false, Canceled) }
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.err == nil {
-		c.timer = time.AfterFunc(dur, func() {
+		c.timer = time.AfterFunc(dur, func() { //如果还没取消，就设置个定时器，AfterFunc函数就是说，在时间dur之后，定时执行func，即cancel。
 			c.cancel(true, DeadlineExceeded)
 		})
 	}
@@ -511,18 +540,18 @@ func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc) {
 // struct{}. Alternatively, exported context key variables' static
 // type should be a pointer or interface.
 func WithValue(parent Context, key, val interface{}) Context {
-	if key == nil {
+	if key == nil { //无key  panic
 		panic("nil key")
 	}
-	if !reflectlite.TypeOf(key).Comparable() {
+	if !reflectlite.TypeOf(key).Comparable() { //key  是可以比较的值
 		panic("key is not comparable")
 	}
-	return &valueCtx{parent, key, val}
+	return &valueCtx{parent, key, val} //返回valueCtx 类型
 }
 
 // A valueCtx carries a key-value pair. It implements Value for that key and
 // delegates all other calls to the embedded Context.
-type valueCtx struct {
+type valueCtx struct { //
 	Context
 	key, val interface{}
 }
@@ -546,9 +575,9 @@ func (c *valueCtx) String() string {
 		", val " + stringify(c.val) + ")"
 }
 
-func (c *valueCtx) Value(key interface{}) interface{} {
-	if c.key == key {
+func (c *valueCtx) Value(key interface{}) interface{} { //重写了 context 方法
+	if c.key == key { //如果当前Context 存储了value ，
 		return c.val
 	}
-	return c.Context.Value(key)
+	return c.Context.Value(key) //这里是一个递归   ，向上查询父类
 }

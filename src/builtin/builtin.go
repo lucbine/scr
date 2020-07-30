@@ -8,6 +8,7 @@
 	but their descriptions here allow godoc to present documentation
 	for the language's special identifiers.
 */
+//内置包
 package builtin
 
 // bool is the set of boolean values, true and false.
@@ -68,6 +69,12 @@ type complex128 complex128
 // string is the set of all strings of 8-bit bytes, conventionally but not
 // necessarily representing UTF-8-encoded text. A string may be empty, but
 // not nil. Values of string type are immutable.
+/*
+所以string是8比特字节的集合，通常但并不一定是UTF-8编码的文本。
+另外，还提到了两点，非常重要：
+	string可以为空（长度为0），但不会是nil；
+	string对象不可以修改
+*/
 type string string
 
 // int is a signed integer type that is at least 32 bits in size. It is a
@@ -80,6 +87,7 @@ type uint uint
 
 // uintptr is an integer type that is large enough to hold the bit pattern of
 // any pointer.
+//uintptr：uintptr 是 Go 的内置类型。返回无符号整数，可存储一个完整的地址。后续常用于指针运算
 type uintptr uintptr
 
 // byte is an alias for uint8 and is equivalent to uint8 in all ways. It is

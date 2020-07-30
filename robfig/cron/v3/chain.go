@@ -8,16 +8,16 @@ import (
 )
 
 // JobWrapper decorates the given Job with some behavior.
-type JobWrapper func(Job) Job
+type JobWrapper func(Job) Job //用一系列的行为包装job
 
 // Chain is a sequence of JobWrappers that decorates submitted jobs with
 // cross-cutting behaviors like logging or synchronization.
-type Chain struct {
+type Chain struct { //job 的行为链
 	wrappers []JobWrapper
 }
 
 // NewChain returns a Chain consisting of the given JobWrappers.
-func NewChain(c ...JobWrapper) Chain {
+func NewChain(c ...JobWrapper) Chain { //新建一个job的行为链
 	return Chain{c}
 }
 

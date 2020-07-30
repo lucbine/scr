@@ -10,9 +10,11 @@
 */
 package unsafe
 
+//https://www.jianshu.com/p/950ee7fbed40
+//https://www.jianshu.com/p/950ee7fbed40 学习技术文档
 // ArbitraryType is here for the purposes of documentation only and is not actually
 // part of the unsafe package. It represents the type of an arbitrary Go expression.
-type ArbitraryType int
+type ArbitraryType int //整形类型 ：表示任意类型且可寻址的指针值 （Go 语言的指针类型长度与int类型长度，在内存中占用的字节数是一样的）
 
 // Pointer represents a pointer to an arbitrary type. There are four special operations
 // available for type Pointer that are not available for other types:
@@ -176,8 +178,22 @@ type ArbitraryType int
 //	hdr.Data = uintptr(unsafe.Pointer(p))
 //	hdr.Len = n
 //	s := *(*string)(unsafe.Pointer(&hdr)) // p possibly already lost
+/**
+uintptr和unsafe.Pointer的区别就是：
+
+unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；
+
+而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象， uintptr 类型的目标会被回收；
+
+unsafe.Pointer 可以和 普通指针 进行相互转换；
+
+unsafe.Pointer 可以和 uintptr 进行相互转换。
+
+
 //
-type Pointer *ArbitraryType
+*/
+
+type Pointer *ArbitraryType //表示任意类型且可寻址的指针值  可以在不同的指针类型之间进行转换
 
 // Sizeof takes an expression x of any type and returns the size in bytes
 // of a hypothetical variable v as if v was declared via var v = x.
@@ -185,13 +201,13 @@ type Pointer *ArbitraryType
 // For instance, if x is a slice, Sizeof returns the size of the slice
 // descriptor, not the size of the memory referenced by the slice.
 // The return value of Sizeof is a Go constant.
-func Sizeof(x ArbitraryType) uintptr
+func Sizeof(x ArbitraryType) uintptr //返回变量在内存中占用的字节数，切记，如果是slice，则不会返回这个slice在内存中的实际占用长度
 
 // Offsetof returns the offset within the struct of the field represented by x,
 // which must be of the form structValue.field. In other words, it returns the
 // number of bytes between the start of the struct and the start of the field.
 // The return value of Offsetof is a Go constant.
-func Offsetof(x ArbitraryType) uintptr
+func Offsetof(x ArbitraryType) uintptr //返回变量指定属性的偏移量，所以如果变量是一个struct类型，不能直接将这个struct类型的变量当作参数，只能将这个struct类型变量的属性当作参数
 
 // Alignof takes an expression x of any type and returns the required alignment
 // of a hypothetical variable v as if v was declared via var v = x.
@@ -202,4 +218,4 @@ func Offsetof(x ArbitraryType) uintptr
 // of a field of that type within a struct. This case is the same as the
 // value returned by reflect.TypeOf(s.f).FieldAlign().
 // The return value of Alignof is a Go constant.
-func Alignof(x ArbitraryType) uintptr
+func Alignof(x ArbitraryType) uintptr //返回变量对齐字节数量
