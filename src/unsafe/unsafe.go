@@ -11,7 +11,7 @@
 package unsafe
 
 //https://www.jianshu.com/p/950ee7fbed40
-//https://www.jianshu.com/p/950ee7fbed40 学习技术文档
+//https://www.jianshu.com/p/950ee7fbed40  学习技术文档
 // ArbitraryType is here for the purposes of documentation only and is not actually
 // part of the unsafe package. It represents the type of an arbitrary Go expression.
 type ArbitraryType int //整形类型 ：表示任意类型且可寻址的指针值 （Go 语言的指针类型长度与int类型长度，在内存中占用的字节数是一样的）

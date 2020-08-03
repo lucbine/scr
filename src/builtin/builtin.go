@@ -130,8 +130,8 @@ type FloatType float32
 // stand-in for either complex type: complex64 or complex128.
 type ComplexType complex64
 
-// The append built-in function appends elements to the end of a slice. If
-// it has sufficient capacity, the destination is resliced to accommodate the
+// The append built-in function appends elements to the end of a slice. If  		//append 是go 内建的用于在slice后新增元素
+// it has sufficient capacity, the destination is resliced to accommodate the	    //如果slice有足够容量  将重新划分以容纳新元素
 // new elements. If it does not, a new underlying array will be allocated.
 // Append returns the updated slice. It is therefore necessary to store the
 // result of append, often in the variable holding the slice itself:
