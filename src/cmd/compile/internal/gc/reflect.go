@@ -79,7 +79,7 @@ func makefield(name string, t *types.Type) *types.Field {
 }
 
 // bmap makes the map bucket type given the type of the map.
-func bmap(t *types.Type) *types.Type {
+func bmap(t *types.Type) *types.Type { //bmap 结构编译生成
 	if t.MapType().Bucket != nil {
 		return t.MapType().Bucket
 	}
@@ -97,6 +97,14 @@ func bmap(t *types.Type) *types.Type {
 	}
 
 	field := make([]*types.Field, 0, 5)
+	//生产此类型的机构
+	//type bmap struct {
+	//	topbits  [8]uint8			//内存偏移量
+	//	keys     [8]keytype			//key
+	//	values   [8]valuetype	//value
+	//	pad      uintptr		//用于表示keys  和 values的内存之差填充
+	//	overflow uintptr
+	//}
 
 	// The first field is: uint8 topbits[BUCKETSIZE].
 	arr := types.NewArray(types.Types[TUINT8], BUCKETSIZE)
