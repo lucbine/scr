@@ -523,12 +523,11 @@ func cpuinit() {
 
 // The bootstrap sequence is:
 //
-//	call osinit
-//	call schedinit
-//	make & queue new G
-//	call runtime·mstart
-//
-// The new G calls runtime·main.
+//	call osinit		初始化系统核心数
+//	call schedinit	初始化调度器
+//	make & queue new G	创建新的 goroutine
+//	call runtime·mstart	调用 mstart，启动调度
+//  The new G calls runtime·main.	在新的 goroutine 上运行 runtime.main 函数
 func schedinit() {
 	// raceinit must be the first call to race detector.
 	// In particular, it must be done before mallocinit below calls racemapshadow.
@@ -537,19 +536,20 @@ func schedinit() {
 		_g_.racectx, raceprocctx0 = raceinit()
 	}
 
+	// 最多启动 10000 个工作线程
 	sched.maxmcount = 10000
 
 	tracebackinit()
 	moduledataverify()
-	stackinit()
-	mallocinit()
-	fastrandinit() // must run before mcommoninit
-	mcommoninit(_g_.m)
-	cpuinit()       // must run before alginit
-	alginit()       // maps must not be used before this call
-	modulesinit()   // provides activeModules
-	typelinksinit() // uses maps, activeModules
-	itabsinit()     // uses activeModules
+	stackinit()        //栈初始化
+	mallocinit()       //内存分配器初始化
+	fastrandinit()     // must run before mcommoninit
+	mcommoninit(_g_.m) // 初始化 m0
+	cpuinit()          // must run before alginit		//cpu 初始化
+	alginit()          // maps must not be used before this call		//算法初始化  map 只能在此初始化后调用
+	modulesinit()      // provides activeModules
+	typelinksinit()    // uses maps, activeModules
+	itabsinit()        // uses activeModules
 
 	msigsave(_g_.m)
 	initSigmask = _g_.m.sigmask
@@ -557,14 +557,16 @@ func schedinit() {
 	goargs()
 	goenvs()
 	parsedebugvars()
-	gcinit()
+	gcinit() // 垃圾回收器初始化
 
 	sched.lastpoll = uint64(nanotime())
-	procs := ncpu
+	// 初始化 P 的个数
+	// 系统中有多少核，就创建和初始化多少个 p 结构体对象
+	procs := ncpu //cpu 的个数
 	if n, ok := atoi32(gogetenv("GOMAXPROCS")); ok && n > 0 {
 		procs = n
 	}
-	if procresize(procs) != nil {
+	if procresize(procs) != nil { // 初始化所有的 P，正常情况下不会返回有本地任务的 P
 		throw("unknown runnable goroutine during bootstrap")
 	}
 
@@ -606,7 +608,7 @@ func checkmcount() {
 }
 
 func mcommoninit(mp *m) {
-	_g_ := getg()
+	_g_ := getg() // 初始化过程中_g_ = g0
 
 	// g0 stack won't make sense for user (and is not necessary unwindable).
 	if _g_ != _g_.m.g0 {
@@ -617,8 +619,10 @@ func mcommoninit(mp *m) {
 	if sched.mnext+1 < sched.mnext {
 		throw("runtime: thread ID overflow")
 	}
+	// 设置 m 的 id
 	mp.id = sched.mnext
 	sched.mnext++
+	// 检查已创建系统线程是否超过了数量限制（10000）
 	checkmcount()
 
 	mp.fastrand[0] = uint32(int64Hash(uint64(mp.id), fastrandseed))
@@ -3379,7 +3383,7 @@ func malg(stacksize int32) *g {
 // are available sequentially after &fn; they would not be
 // copied if a stack split occurred.
 //go:nosplit
-func newproc(siz int32, fn *funcval) {
+func newproc(siz int32, fn *funcval) { //G 初始化
 	argp := add(unsafe.Pointer(&fn), sys.PtrSize)
 	gp := getg()
 	pc := getcallerpc()
@@ -4157,7 +4161,7 @@ func (pp *p) destroy() {
 // gcworkbufs are not being modified by either the GC or
 // the write barrier code.
 // Returns list of Ps with local work, they need to be scheduled by the caller.
-func procresize(nprocs int32) *p {
+func procresize(nprocs int32) *p { //根据Cpu的个数生产P （P 初始化）
 	old := gomaxprocs
 	if old < 0 || nprocs <= 0 {
 		throw("procresize: invalid arg")
@@ -4919,7 +4923,7 @@ func pidleget() *p {
 	return _p_
 }
 
-// runqempty reports whether _p_ has no Gs on its local run queue.
+// runqempty reports whether _p_ has no Gs on its local run queue.	// 如果 _p_ 的本地队列里没有待运行的 G，则返回 true
 // It never returns true spuriously.
 func runqempty(_p_ *p) bool {
 	// Defend against a race where 1) _p_ has G1 in runqnext but runqhead == runqtail,

@@ -20,9 +20,9 @@ var (
 
 // Note: change the formula in the mallocgc call in itabAdd if you change these fields.
 type itabTableType struct {
-	size    uintptr             // length of entries array. Always a power of 2.
-	count   uintptr             // current number of filled entries.
-	entries [itabInitSize]*itab // really [size] large
+	size    uintptr             // length of entries array. Always a power of 2.	// 数组长度  2的倍数
+	count   uintptr             // current number of filled entries.	/ 已填充个数
+	entries [itabInitSize]*itab // really [size] large // itab数组
 }
 
 func itabHashFunc(inter *interfacetype, typ *_type) uintptr {
@@ -321,10 +321,10 @@ func convT2E(t *_type, elem unsafe.Pointer) (e eface) {
 	if msanenabled {
 		msanread(elem, t.size)
 	}
-	x := mallocgc(t.size, t, true)
+	x := mallocgc(t.size, t, true) // 内存申请
 	// TODO: We allocate a zeroed object only to overwrite it with actual data.
 	// Figure out how to avoid zeroing. Also below in convT2Eslice, convT2I, convT2Islice.
-	typedmemmove(t, x, elem)
+	typedmemmove(t, x, elem) //值copy
 	e._type = t
 	e.data = x
 	return
@@ -425,18 +425,18 @@ func convT2Inoptr(tab *itab, elem unsafe.Pointer) (i iface) {
 	return
 }
 
-func convI2I(inter *interfacetype, i iface) (r iface) {
+func convI2I(inter *interfacetype, i iface) (r iface) { //iface 转iface 结构
 	tab := i.tab
 	if tab == nil {
 		return
 	}
-	if tab.inter == inter {
+	if tab.inter == inter { //如果两iface实现的接口一样， 则直接赋值完事
 		r.tab = tab
 		r.data = i.data
 		return
 	}
-	r.tab = getitab(inter, tab._type, false)
-	r.data = i.data
+	r.tab = getitab(inter, tab._type, false) // 获取itab
+	r.data = i.data                          //设置data
 	return
 }
 

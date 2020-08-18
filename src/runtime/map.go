@@ -167,25 +167,25 @@ type bmap struct {
 	// overflow pointer  // 发生哈希碰撞之后创建的overflow bucket
 }
 
-// A hash iteration structure.
+// A hash iteration structure.		hash 迭代器结构
 // If you modify hiter, also change cmd/compile/internal/gc/reflect.go to indicate
 // the layout of this structure.
 type hiter struct {
-	key         unsafe.Pointer // Must be in first position.  Write nil to indicate iteration end (see cmd/internal/gc/range.go).
-	elem        unsafe.Pointer // Must be in second position (see cmd/internal/gc/range.go).
-	t           *maptype
-	h           *hmap
-	buckets     unsafe.Pointer // bucket ptr at hash_iter initialization time
-	bptr        *bmap          // current bucket
+	key         unsafe.Pointer // Must be in first position.  Write nil to indicate iteration end (see cmd/internal/gc/range.go).   //key 指针
+	elem        unsafe.Pointer // Must be in second position (see cmd/internal/gc/range.go).	//元素指针
+	t           *maptype       // // map 类型，包含如 key size 大小等
+	h           *hmap          // map header
+	buckets     unsafe.Pointer // bucket ptr at hash_iter initialization time	 // 初始化时指向的 bucket
+	bptr        *bmap          // current bucket	 // 当前遍历到的 bmap
 	overflow    *[]*bmap       // keeps overflow buckets of hmap.buckets alive
 	oldoverflow *[]*bmap       // keeps overflow buckets of hmap.oldbuckets alive
-	startBucket uintptr        // bucket iteration started at
-	offset      uint8          // intra-bucket offset to start from during iteration (should be big enough to hold bucketCnt-1)
-	wrapped     bool           // already wrapped around from end of bucket array to beginning
-	B           uint8
-	i           uint8
-	bucket      uintptr
-	checkBucket uintptr
+	startBucket uintptr        // bucket iteration started at // 起始遍历的 bucet 编号
+	offset      uint8          // intra-bucket offset to start from during iteration (should be big enough to hold bucketCnt-1)	// 遍历开始时 cell 的编号（每个 bucket 中有 8 个 cell）
+	wrapped     bool           // already wrapped around from end of bucket array to beginning	 // 是否从头遍历了
+	B           uint8          // B 的大小
+	i           uint8          // 指示当前 cell 序号
+	bucket      uintptr        // 指向当前的 bucket
+	checkBucket uintptr        // 因为扩容，需要检查的 bucket
 }
 
 // bucketShift returns 1<<b, optimized for code generation.
@@ -529,7 +529,7 @@ bucketloop:
 	return unsafe.Pointer(&zeroVal[0]), false
 }
 
-// returns both key and elem. Used by map iterator
+// returns both key and elem. Used by map iterator	//map 迭代器的时候 返回 key 和 value
 func mapaccessK(t *maptype, h *hmap, key unsafe.Pointer) (unsafe.Pointer, unsafe.Pointer) {
 	if h == nil || h.count == 0 {
 		return nil, nil
@@ -704,7 +704,7 @@ done:
 	return elem
 }
 
-func mapdelete(t *maptype, h *hmap, key unsafe.Pointer) {
+func mapdelete(t *maptype, h *hmap, key unsafe.Pointer) { //删除元素
 	if raceenabled && h != nil {
 		callerpc := getcallerpc()
 		pc := funcPC(mapdelete)
@@ -720,7 +720,7 @@ func mapdelete(t *maptype, h *hmap, key unsafe.Pointer) {
 		}
 		return
 	}
-	if h.flags&hashWriting != 0 {
+	if h.flags&hashWriting != 0 { //正在写
 		throw("concurrent map writes")
 	}
 
@@ -755,12 +755,16 @@ search:
 				continue
 			}
 			// Only clear key if there are pointers in it.
+
+			//删除key
 			if t.indirectkey() {
 				*(*unsafe.Pointer)(k) = nil
 			} else if t.key.ptrdata != 0 {
 				memclrHasPointers(k, t.key.size)
 			}
 			e := add(unsafe.Pointer(b), dataOffset+bucketCnt*uintptr(t.keysize)+i*uintptr(t.elemsize))
+
+			//删除value
 			if t.indirectelem() {
 				*(*unsafe.Pointer)(e) = nil
 			} else if t.elem.ptrdata != 0 {
@@ -768,7 +772,7 @@ search:
 			} else {
 				memclrNoHeapPointers(e, t.elem.size)
 			}
-			b.tophash[i] = emptyOne
+			b.tophash[i] = emptyOne //tophash 位置 标记为空
 			// If the bucket now ends in a bunch of emptyOne states,
 			// change those to emptyRest states.
 			// It would be nice to make this a separate function, but
@@ -816,7 +820,7 @@ search:
 // The hiter struct pointed to by 'it' is allocated on the stack
 // by the compilers order pass or on the heap by reflect_mapiterinit.
 // Both need to have zeroed hiter since the struct contains pointers.
-func mapiterinit(t *maptype, h *hmap, it *hiter) {
+func mapiterinit(t *maptype, h *hmap, it *hiter) { //初始化map 迭代器
 	if raceenabled && h != nil {
 		callerpc := getcallerpc()
 		racereadpc(unsafe.Pointer(h), callerpc, funcPC(mapiterinit))
@@ -845,13 +849,13 @@ func mapiterinit(t *maptype, h *hmap, it *hiter) {
 		it.oldoverflow = h.extra.oldoverflow
 	}
 
-	// decide where to start
+	// decide where to start	// 生成随机数 r
 	r := uintptr(fastrand())
 	if h.B > 31-bucketCntBits {
 		r += uintptr(fastrand()) << 31
 	}
-	it.startBucket = r & bucketMask(h.B)
-	it.offset = uint8(r >> h.B & (bucketCnt - 1))
+	it.startBucket = r & bucketMask(h.B)          // 从哪个 bucket 开始遍历
+	it.offset = uint8(r >> h.B & (bucketCnt - 1)) // 从 bucket 的哪个 cell 开始遍历
 
 	// iterator state
 	it.bucket = it.startBucket
@@ -865,7 +869,7 @@ func mapiterinit(t *maptype, h *hmap, it *hiter) {
 	mapiternext(it)
 }
 
-func mapiternext(it *hiter) {
+func mapiternext(it *hiter) { //开始迭代
 	h := it.h
 	if raceenabled {
 		callerpc := getcallerpc()
@@ -912,7 +916,7 @@ next:
 		}
 		i = 0
 	}
-	for ; i < bucketCnt; i++ {
+	for ; i < bucketCnt; i++ { // 遍历
 		offi := (i + it.offset) & (bucketCnt - 1)
 		if isEmpty(b.tophash[offi]) || b.tophash[offi] == evacuatedEmpty {
 			// TODO: emptyRest is hard to use here, as we start iterating
@@ -1036,13 +1040,13 @@ func mapclear(t *maptype, h *hmap) {
 	h.flags &^= hashWriting
 }
 
-func hashGrow(t *maptype, h *hmap) {
+func hashGrow(t *maptype, h *hmap) { //生成一个新的buckets(此时 并没有发生元素的迁移)
 	// If we've hit the load factor, get bigger.
 	// Otherwise, there are too many overflow buckets,
 	// so keep the same number of buckets and "grow" laterally.
-	bigger := uint8(1)
-	if !overLoadFactor(h.count+1, h.B) {
-		bigger = 0
+	bigger := uint8(1)                   //扩容一倍
+	if !overLoadFactor(h.count+1, h.B) { //如没有触发扩容
+		bigger = 0 //不进行扩容
 		h.flags |= sameSizeGrow
 	}
 	oldbuckets := h.buckets
@@ -1080,14 +1084,24 @@ func hashGrow(t *maptype, h *hmap) {
 }
 
 // overLoadFactor reports whether count items placed in 1<<B buckets is over loadFactor.
-func overLoadFactor(count int, B uint8) bool {
+func overLoadFactor(count int, B uint8) bool { //装载因子超过 6.5
+
 	return count > bucketCnt && uintptr(count) > loadFactorNum*(bucketShift(B)/loadFactorDen)
 }
+
+//loadFactor := count / (2^B)  count 就是 map 的元素个数，2^B 表示 bucket 数量。
+
+/*
+	再来说触发 map 扩容的时机：在向 map 插入新 key 的时候，会进行条件检测，符合下面这 2 个条件，就会触发扩容：
+	装载因子超过阈值，源码里定义的阈值是 6.5。
+	overflow 的 bucket 数量过多：当 B 小于 15，也就是 bucket 总数 2^B 小于 2^15 时，如果 overflow 的 bucket 数量超过 2^B；当 B >= 15，
+	也就是 bucket 总数 2^B 大于等于 2^15，如果 overflow 的 bucket 数量超过 2^15。
+*/
 
 // tooManyOverflowBuckets reports whether noverflow buckets is too many for a map with 1<<B buckets.
 // Note that most of these overflow buckets must be in sparse use;
 // if use was dense, then we'd have already triggered regular map growth.
-func tooManyOverflowBuckets(noverflow uint16, B uint8) bool {
+func tooManyOverflowBuckets(noverflow uint16, B uint8) bool { // overflow buckets 太多
 	// If the threshold is too low, we do extraneous work.
 	// If the threshold is too high, maps that grow and shrink can hold on to lots of unused memory.
 	// "too many" means (approximately) as many overflow buckets as regular buckets.
@@ -1148,9 +1162,11 @@ type evacDst struct {
 }
 
 func evacuate(t *maptype, h *hmap, oldbucket uintptr) {
+	// 定位老的 bucket 地址
 	b := (*bmap)(add(h.oldbuckets, oldbucket*uintptr(t.bucketsize)))
+	// 结果是 2^B，如 B = 5，结果为32
 	newbit := h.noldbuckets()
-	if !evacuated(b) {
+	if !evacuated(b) { // 如果 b 没有被搬迁过
 		// TODO: reuse overflow buckets instead of using new ones, if there
 		// is no iterator using the old buckets.  (If !oldIterator.)
 

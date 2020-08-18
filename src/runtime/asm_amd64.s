@@ -209,20 +209,20 @@ ok:
 	MOVL	AX, 0(SP)
 	MOVQ	24(SP), AX		// copy argv
 	MOVQ	AX, 8(SP)
-	CALL	runtime·args(SB)
-	CALL	runtime·osinit(SB)
-	CALL	runtime·schedinit(SB)
+	CALL	runtime·args(SB) // 初始化执行文件的绝对路径
+	CALL	runtime·osinit(SB) // 初始化 CPU 个数和内存页大小
+	CALL	runtime·schedinit(SB) // 初始化命令行参数、环境变量、gc、栈空间、内存管理、所有 P 实例、HASH算法等
 
-	// create a new goroutine to start program
+	// create a new goroutine to start program //创建一个goroutine  开始运行程序
 	MOVQ	$runtime·mainPC(SB), AX		// entry
 	PUSHQ	AX
 	PUSHQ	$0			// arg size
-	CALL	runtime·newproc(SB)
+	CALL	runtime·newproc(SB)  // 新建一个 goroutine，该 goroutine 绑定 runtime.main，放在 P 的本地队列，等待调度
 	POPQ	AX
 	POPQ	AX
 
 	// start this M
-	CALL	runtime·mstart(SB)
+	CALL	runtime·mstart(SB)  // 启动M，开始调度goroutine
 
 	CALL	runtime·abort(SB)	// mstart should never return
 	RET

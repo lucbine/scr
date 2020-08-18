@@ -295,9 +295,9 @@ func getHugePageSize() uintptr {
 }
 
 func osinit() {
-	ncpu = getproccount()
-	physHugePageSize = getHugePageSize()
-	osArchInit()
+	ncpu = getproccount()                // cpu 的个数
+	physHugePageSize = getHugePageSize() //内存页大小
+	osArchInit()                         //系统架构初始化
 }
 
 var urandom_dev = []byte("/dev/urandom\x00")
