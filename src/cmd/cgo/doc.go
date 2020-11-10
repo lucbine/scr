@@ -45,15 +45,15 @@ For example:
 	// #include <png.h>
 	import "C"
 
-Alternatively, CPPFLAGS and LDFLAGS may be obtained via the pkg-config tool
-using a '#cgo pkg-config:' directive followed by the package names.
+Alternatively, CPPFLAGS and LDFLAGS may be obtained via the pkg-Config tool
+using a '#cgo pkg-Config:' directive followed by the package names.
 For example:
 
-	// #cgo pkg-config: png cairo
+	// #cgo pkg-Config: png cairo
 	// #include <png.h>
 	import "C"
 
-The default pkg-config tool may be changed by setting the PKG_CONFIG environment variable.
+The default pkg-Config tool may be changed by setting the PKG_CONFIG environment variable.
 
 For security reasons, only a limited set of flags are allowed, notably -D, -U, -I, and -l.
 To allow additional flags, set CGO_CFLAGS_ALLOW to a regular expression
@@ -82,7 +82,7 @@ directives in a package are concatenated and used to compile C++ files in that
 package. All the CPPFLAGS and FFLAGS directives in a package are concatenated
 and used to compile Fortran files in that package. All the LDFLAGS directives
 in any package in the program are concatenated and used at link time. All the
-pkg-config directives are concatenated and sent to pkg-config simultaneously
+pkg-Config directives are concatenated and sent to pkg-Config simultaneously
 to add to each appropriate set of command-line flags.
 
 When the cgo directives are parsed, any occurrence of the string ${SRCDIR}

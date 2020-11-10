@@ -6424,7 +6424,7 @@ func rewriteValuegeneric_OpConstSlice_0(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (ConstSlice)
-	// cond: config.PtrSize == 4
+	// cond: Config.PtrSize == 4
 	// result: (SliceMake (ConstNil <v.Type.Elem().PtrTo()>) (Const32 <typ.Int> [0]) (Const32 <typ.Int> [0]))
 	for {
 		if !(config.PtrSize == 4) {
@@ -6442,7 +6442,7 @@ func rewriteValuegeneric_OpConstSlice_0(v *Value) bool {
 		return true
 	}
 	// match: (ConstSlice)
-	// cond: config.PtrSize == 8
+	// cond: Config.PtrSize == 8
 	// result: (SliceMake (ConstNil <v.Type.Elem().PtrTo()>) (Const64 <typ.Int> [0]) (Const64 <typ.Int> [0]))
 	for {
 		if !(config.PtrSize == 8) {
@@ -6467,7 +6467,7 @@ func rewriteValuegeneric_OpConstString_0(v *Value) bool {
 	fe := b.Func.fe
 	typ := &b.Func.Config.Types
 	// match: (ConstString {s})
-	// cond: config.PtrSize == 4 && s.(string) == ""
+	// cond: Config.PtrSize == 4 && s.(string) == ""
 	// result: (StringMake (ConstNil) (Const32 <typ.Int> [0]))
 	for {
 		s := v.Aux
@@ -6483,7 +6483,7 @@ func rewriteValuegeneric_OpConstString_0(v *Value) bool {
 		return true
 	}
 	// match: (ConstString {s})
-	// cond: config.PtrSize == 8 && s.(string) == ""
+	// cond: Config.PtrSize == 8 && s.(string) == ""
 	// result: (StringMake (ConstNil) (Const64 <typ.Int> [0]))
 	for {
 		s := v.Aux
@@ -6499,7 +6499,7 @@ func rewriteValuegeneric_OpConstString_0(v *Value) bool {
 		return true
 	}
 	// match: (ConstString {s})
-	// cond: config.PtrSize == 4 && s.(string) != ""
+	// cond: Config.PtrSize == 4 && s.(string) != ""
 	// result: (StringMake (Addr <typ.BytePtr> {fe.StringData(s.(string))} (SB)) (Const32 <typ.Int> [int64(len(s.(string)))]))
 	for {
 		s := v.Aux
@@ -6518,7 +6518,7 @@ func rewriteValuegeneric_OpConstString_0(v *Value) bool {
 		return true
 	}
 	// match: (ConstString {s})
-	// cond: config.PtrSize == 8 && s.(string) != ""
+	// cond: Config.PtrSize == 8 && s.(string) != ""
 	// result: (StringMake (Addr <typ.BytePtr> {fe.StringData(s.(string))} (SB)) (Const64 <typ.Int> [int64(len(s.(string)))]))
 	for {
 		s := v.Aux
@@ -7020,7 +7020,7 @@ func rewriteValuegeneric_OpDiv16u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div16u x (Const16 [c]))
-	// cond: umagicOK(16, c) && config.RegSize == 8
+	// cond: umagicOK(16, c) && Config.RegSize == 8
 	// result: (Trunc64to16 (Rsh64Ux64 <typ.UInt64> (Mul64 <typ.UInt64> (Const64 <typ.UInt64> [int64(1<<16+umagic(16,c).m)]) (ZeroExt16to64 x)) (Const64 <typ.UInt64> [16+umagic(16,c).s])))
 	for {
 		_ = v.Args[1]
@@ -7050,7 +7050,7 @@ func rewriteValuegeneric_OpDiv16u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div16u x (Const16 [c]))
-	// cond: umagicOK(16, c) && config.RegSize == 4 && umagic(16,c).m&1 == 0
+	// cond: umagicOK(16, c) && Config.RegSize == 4 && umagic(16,c).m&1 == 0
 	// result: (Trunc32to16 (Rsh32Ux64 <typ.UInt32> (Mul32 <typ.UInt32> (Const32 <typ.UInt32> [int64(1<<15+umagic(16,c).m/2)]) (ZeroExt16to32 x)) (Const64 <typ.UInt64> [16+umagic(16,c).s-1])))
 	for {
 		_ = v.Args[1]
@@ -7080,7 +7080,7 @@ func rewriteValuegeneric_OpDiv16u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div16u x (Const16 [c]))
-	// cond: umagicOK(16, c) && config.RegSize == 4 && c&1 == 0
+	// cond: umagicOK(16, c) && Config.RegSize == 4 && c&1 == 0
 	// result: (Trunc32to16 (Rsh32Ux64 <typ.UInt32> (Mul32 <typ.UInt32> (Const32 <typ.UInt32> [int64(1<<15+(umagic(16,c).m+1)/2)]) (Rsh32Ux64 <typ.UInt32> (ZeroExt16to32 x) (Const64 <typ.UInt64> [1]))) (Const64 <typ.UInt64> [16+umagic(16,c).s-2])))
 	for {
 		_ = v.Args[1]
@@ -7115,7 +7115,7 @@ func rewriteValuegeneric_OpDiv16u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div16u x (Const16 [c]))
-	// cond: umagicOK(16, c) && config.RegSize == 4 && config.useAvg
+	// cond: umagicOK(16, c) && Config.RegSize == 4 && Config.useAvg
 	// result: (Trunc32to16 (Rsh32Ux64 <typ.UInt32> (Avg32u (Lsh32x64 <typ.UInt32> (ZeroExt16to32 x) (Const64 <typ.UInt64> [16])) (Mul32 <typ.UInt32> (Const32 <typ.UInt32> [int64(umagic(16,c).m)]) (ZeroExt16to32 x))) (Const64 <typ.UInt64> [16+umagic(16,c).s-1])))
 	for {
 		_ = v.Args[1]
@@ -7285,7 +7285,7 @@ func rewriteValuegeneric_OpDiv32_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32 <t> x (Const32 [c]))
-	// cond: smagicOK(32,c) && config.RegSize == 8
+	// cond: smagicOK(32,c) && Config.RegSize == 8
 	// result: (Sub32 <t> (Rsh64x64 <t> (Mul64 <typ.UInt64> (Const64 <typ.UInt64> [int64(smagic(32,c).m)]) (SignExt32to64 x)) (Const64 <typ.UInt64> [32+smagic(32,c).s])) (Rsh64x64 <t> (SignExt32to64 x) (Const64 <typ.UInt64> [63])))
 	for {
 		t := v.Type
@@ -7325,7 +7325,7 @@ func rewriteValuegeneric_OpDiv32_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32 <t> x (Const32 [c]))
-	// cond: smagicOK(32,c) && config.RegSize == 4 && smagic(32,c).m&1 == 0 && config.useHmul
+	// cond: smagicOK(32,c) && Config.RegSize == 4 && smagic(32,c).m&1 == 0 && Config.useHmul
 	// result: (Sub32 <t> (Rsh32x64 <t> (Hmul32 <t> (Const32 <typ.UInt32> [int64(int32(smagic(32,c).m/2))]) x) (Const64 <typ.UInt64> [smagic(32,c).s-1])) (Rsh32x64 <t> x (Const64 <typ.UInt64> [31])))
 	for {
 		t := v.Type
@@ -7361,7 +7361,7 @@ func rewriteValuegeneric_OpDiv32_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32 <t> x (Const32 [c]))
-	// cond: smagicOK(32,c) && config.RegSize == 4 && smagic(32,c).m&1 != 0 && config.useHmul
+	// cond: smagicOK(32,c) && Config.RegSize == 4 && smagic(32,c).m&1 != 0 && Config.useHmul
 	// result: (Sub32 <t> (Rsh32x64 <t> (Add32 <t> (Hmul32 <t> (Const32 <typ.UInt32> [int64(int32(smagic(32,c).m))]) x) x) (Const64 <typ.UInt64> [smagic(32,c).s])) (Rsh32x64 <t> x (Const64 <typ.UInt64> [31])))
 	for {
 		t := v.Type
@@ -7493,7 +7493,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 4 && umagic(32,c).m&1 == 0 && config.useHmul
+	// cond: umagicOK(32, c) && Config.RegSize == 4 && umagic(32,c).m&1 == 0 && Config.useHmul
 	// result: (Rsh32Ux64 <typ.UInt32> (Hmul32u <typ.UInt32> (Const32 <typ.UInt32> [int64(int32(1<<31+umagic(32,c).m/2))]) x) (Const64 <typ.UInt64> [umagic(32,c).s-1]))
 	for {
 		_ = v.Args[1]
@@ -7520,7 +7520,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 4 && c&1 == 0 && config.useHmul
+	// cond: umagicOK(32, c) && Config.RegSize == 4 && c&1 == 0 && Config.useHmul
 	// result: (Rsh32Ux64 <typ.UInt32> (Hmul32u <typ.UInt32> (Const32 <typ.UInt32> [int64(int32(1<<31+(umagic(32,c).m+1)/2))]) (Rsh32Ux64 <typ.UInt32> x (Const64 <typ.UInt64> [1]))) (Const64 <typ.UInt64> [umagic(32,c).s-2]))
 	for {
 		_ = v.Args[1]
@@ -7552,7 +7552,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 4 && config.useAvg && config.useHmul
+	// cond: umagicOK(32, c) && Config.RegSize == 4 && Config.useAvg && Config.useHmul
 	// result: (Rsh32Ux64 <typ.UInt32> (Avg32u x (Hmul32u <typ.UInt32> (Const32 <typ.UInt32> [int64(int32(umagic(32,c).m))]) x)) (Const64 <typ.UInt64> [umagic(32,c).s-1]))
 	for {
 		_ = v.Args[1]
@@ -7582,7 +7582,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 8 && umagic(32,c).m&1 == 0
+	// cond: umagicOK(32, c) && Config.RegSize == 8 && umagic(32,c).m&1 == 0
 	// result: (Trunc64to32 (Rsh64Ux64 <typ.UInt64> (Mul64 <typ.UInt64> (Const64 <typ.UInt64> [int64(1<<31+umagic(32,c).m/2)]) (ZeroExt32to64 x)) (Const64 <typ.UInt64> [32+umagic(32,c).s-1])))
 	for {
 		_ = v.Args[1]
@@ -7612,7 +7612,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 8 && c&1 == 0
+	// cond: umagicOK(32, c) && Config.RegSize == 8 && c&1 == 0
 	// result: (Trunc64to32 (Rsh64Ux64 <typ.UInt64> (Mul64 <typ.UInt64> (Const64 <typ.UInt64> [int64(1<<31+(umagic(32,c).m+1)/2)]) (Rsh64Ux64 <typ.UInt64> (ZeroExt32to64 x) (Const64 <typ.UInt64> [1]))) (Const64 <typ.UInt64> [32+umagic(32,c).s-2])))
 	for {
 		_ = v.Args[1]
@@ -7647,7 +7647,7 @@ func rewriteValuegeneric_OpDiv32u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div32u x (Const32 [c]))
-	// cond: umagicOK(32, c) && config.RegSize == 8 && config.useAvg
+	// cond: umagicOK(32, c) && Config.RegSize == 8 && Config.useAvg
 	// result: (Trunc64to32 (Rsh64Ux64 <typ.UInt64> (Avg64u (Lsh64x64 <typ.UInt64> (ZeroExt32to64 x) (Const64 <typ.UInt64> [32])) (Mul64 <typ.UInt64> (Const64 <typ.UInt32> [int64(umagic(32,c).m)]) (ZeroExt32to64 x))) (Const64 <typ.UInt64> [32+umagic(32,c).s-1])))
 	for {
 		_ = v.Args[1]
@@ -7831,7 +7831,7 @@ func rewriteValuegeneric_OpDiv64_0(v *Value) bool {
 		return true
 	}
 	// match: (Div64 <t> x (Const64 [c]))
-	// cond: smagicOK(64,c) && smagic(64,c).m&1 == 0 && config.useHmul
+	// cond: smagicOK(64,c) && smagic(64,c).m&1 == 0 && Config.useHmul
 	// result: (Sub64 <t> (Rsh64x64 <t> (Hmul64 <t> (Const64 <typ.UInt64> [int64(smagic(64,c).m/2)]) x) (Const64 <typ.UInt64> [smagic(64,c).s-1])) (Rsh64x64 <t> x (Const64 <typ.UInt64> [63])))
 	for {
 		t := v.Type
@@ -7867,7 +7867,7 @@ func rewriteValuegeneric_OpDiv64_0(v *Value) bool {
 		return true
 	}
 	// match: (Div64 <t> x (Const64 [c]))
-	// cond: smagicOK(64,c) && smagic(64,c).m&1 != 0 && config.useHmul
+	// cond: smagicOK(64,c) && smagic(64,c).m&1 != 0 && Config.useHmul
 	// result: (Sub64 <t> (Rsh64x64 <t> (Add64 <t> (Hmul64 <t> (Const64 <typ.UInt64> [int64(smagic(64,c).m)]) x) x) (Const64 <typ.UInt64> [smagic(64,c).s])) (Rsh64x64 <t> x (Const64 <typ.UInt64> [63])))
 	for {
 		t := v.Type
@@ -8015,7 +8015,7 @@ func rewriteValuegeneric_OpDiv64u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div64u x (Const64 [c]))
-	// cond: umagicOK(64, c) && config.RegSize == 8 && umagic(64,c).m&1 == 0 && config.useHmul
+	// cond: umagicOK(64, c) && Config.RegSize == 8 && umagic(64,c).m&1 == 0 && Config.useHmul
 	// result: (Rsh64Ux64 <typ.UInt64> (Hmul64u <typ.UInt64> (Const64 <typ.UInt64> [int64(1<<63+umagic(64,c).m/2)]) x) (Const64 <typ.UInt64> [umagic(64,c).s-1]))
 	for {
 		_ = v.Args[1]
@@ -8042,7 +8042,7 @@ func rewriteValuegeneric_OpDiv64u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div64u x (Const64 [c]))
-	// cond: umagicOK(64, c) && config.RegSize == 8 && c&1 == 0 && config.useHmul
+	// cond: umagicOK(64, c) && Config.RegSize == 8 && c&1 == 0 && Config.useHmul
 	// result: (Rsh64Ux64 <typ.UInt64> (Hmul64u <typ.UInt64> (Const64 <typ.UInt64> [int64(1<<63+(umagic(64,c).m+1)/2)]) (Rsh64Ux64 <typ.UInt64> x (Const64 <typ.UInt64> [1]))) (Const64 <typ.UInt64> [umagic(64,c).s-2]))
 	for {
 		_ = v.Args[1]
@@ -8074,7 +8074,7 @@ func rewriteValuegeneric_OpDiv64u_0(v *Value) bool {
 		return true
 	}
 	// match: (Div64u x (Const64 [c]))
-	// cond: umagicOK(64, c) && config.RegSize == 8 && config.useAvg && config.useHmul
+	// cond: umagicOK(64, c) && Config.RegSize == 8 && Config.useAvg && Config.useHmul
 	// result: (Rsh64Ux64 <typ.UInt64> (Avg64u x (Hmul64u <typ.UInt64> (Const64 <typ.UInt64> [int64(umagic(64,c).m)]) x)) (Const64 <typ.UInt64> [umagic(64,c).s-1]))
 	for {
 		_ = v.Args[1]
@@ -8514,7 +8514,7 @@ func rewriteValuegeneric_OpEq16_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq16 (Mod16u x (Const16 [c])) (Const16 [0]))
-	// cond: x.Op != OpConst16 && udivisibleOK(16,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst16 && udivisibleOK(16,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32u <typ.UInt32> (ZeroExt16to32 <typ.UInt32> x) (Const32 <typ.UInt32> [c&0xffff])) (Const32 <typ.UInt32> [0]))
 	for {
 		_ = v.Args[1]
@@ -8548,7 +8548,7 @@ func rewriteValuegeneric_OpEq16_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq16 (Const16 [0]) (Mod16u x (Const16 [c])))
-	// cond: x.Op != OpConst16 && udivisibleOK(16,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst16 && udivisibleOK(16,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32u <typ.UInt32> (ZeroExt16to32 <typ.UInt32> x) (Const32 <typ.UInt32> [c&0xffff])) (Const32 <typ.UInt32> [0]))
 	for {
 		_ = v.Args[1]
@@ -8585,7 +8585,7 @@ func rewriteValuegeneric_OpEq16_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq16 (Mod16 x (Const16 [c])) (Const16 [0]))
-	// cond: x.Op != OpConst16 && sdivisibleOK(16,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst16 && sdivisibleOK(16,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32 <typ.Int32> (SignExt16to32 <typ.Int32> x) (Const32 <typ.Int32> [c])) (Const32 <typ.Int32> [0]))
 	for {
 		_ = v.Args[1]
@@ -8625,7 +8625,7 @@ func rewriteValuegeneric_OpEq16_10(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (Eq16 (Const16 [0]) (Mod16 x (Const16 [c])))
-	// cond: x.Op != OpConst16 && sdivisibleOK(16,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst16 && sdivisibleOK(16,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32 <typ.Int32> (SignExt16to32 <typ.Int32> x) (Const32 <typ.Int32> [c])) (Const32 <typ.Int32> [0]))
 	for {
 		_ = v.Args[1]
@@ -23042,7 +23042,7 @@ func rewriteValuegeneric_OpEq8_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq8 (Mod8u x (Const8 [c])) (Const8 [0]))
-	// cond: x.Op != OpConst8 && udivisibleOK(8,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst8 && udivisibleOK(8,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32u <typ.UInt32> (ZeroExt8to32 <typ.UInt32> x) (Const32 <typ.UInt32> [c&0xff])) (Const32 <typ.UInt32> [0]))
 	for {
 		_ = v.Args[1]
@@ -23076,7 +23076,7 @@ func rewriteValuegeneric_OpEq8_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq8 (Const8 [0]) (Mod8u x (Const8 [c])))
-	// cond: x.Op != OpConst8 && udivisibleOK(8,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst8 && udivisibleOK(8,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32u <typ.UInt32> (ZeroExt8to32 <typ.UInt32> x) (Const32 <typ.UInt32> [c&0xff])) (Const32 <typ.UInt32> [0]))
 	for {
 		_ = v.Args[1]
@@ -23113,7 +23113,7 @@ func rewriteValuegeneric_OpEq8_0(v *Value) bool {
 		return true
 	}
 	// match: (Eq8 (Mod8 x (Const8 [c])) (Const8 [0]))
-	// cond: x.Op != OpConst8 && sdivisibleOK(8,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst8 && sdivisibleOK(8,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32 <typ.Int32> (SignExt8to32 <typ.Int32> x) (Const32 <typ.Int32> [c])) (Const32 <typ.Int32> [0]))
 	for {
 		_ = v.Args[1]
@@ -23153,7 +23153,7 @@ func rewriteValuegeneric_OpEq8_10(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (Eq8 (Const8 [0]) (Mod8 x (Const8 [c])))
-	// cond: x.Op != OpConst8 && sdivisibleOK(8,c) && !hasSmallRotate(config)
+	// cond: x.Op != OpConst8 && sdivisibleOK(8,c) && !hasSmallRotate(Config)
 	// result: (Eq32 (Mod32 <typ.Int32> (SignExt8to32 <typ.Int32> x) (Const32 <typ.Int32> [c])) (Const32 <typ.Int32> [0]))
 	for {
 		_ = v.Args[1]
@@ -32033,7 +32033,7 @@ func rewriteValuegeneric_OpMove_20(v *Value) bool {
 		return true
 	}
 	// match: (Move {t1} [s] dst tmp1 midmem:(Move {t2} [s] tmp2 src _))
-	// cond: t1.(*types.Type).Compare(t2.(*types.Type)) == types.CMPeq && isSamePtr(tmp1, tmp2) && isStackPtr(src) && disjoint(src, s, tmp2, s) && (disjoint(src, s, dst, s) || isInlinableMemmove(dst, src, s, config))
+	// cond: t1.(*types.Type).Compare(t2.(*types.Type)) == types.CMPeq && isSamePtr(tmp1, tmp2) && isStackPtr(src) && disjoint(src, s, tmp2, s) && (disjoint(src, s, dst, s) || isInlinableMemmove(dst, src, s, Config))
 	// result: (Move {t1} [s] dst src midmem)
 	for {
 		s := v.AuxInt
@@ -32061,7 +32061,7 @@ func rewriteValuegeneric_OpMove_20(v *Value) bool {
 		return true
 	}
 	// match: (Move {t1} [s] dst tmp1 midmem:(VarDef (Move {t2} [s] tmp2 src _)))
-	// cond: t1.(*types.Type).Compare(t2.(*types.Type)) == types.CMPeq && isSamePtr(tmp1, tmp2) && isStackPtr(src) && disjoint(src, s, tmp2, s) && (disjoint(src, s, dst, s) || isInlinableMemmove(dst, src, s, config))
+	// cond: t1.(*types.Type).Compare(t2.(*types.Type)) == types.CMPeq && isSamePtr(tmp1, tmp2) && isStackPtr(src) && disjoint(src, s, tmp2, s) && (disjoint(src, s, dst, s) || isInlinableMemmove(dst, src, s, Config))
 	// result: (Move {t1} [s] dst src midmem)
 	for {
 		s := v.AuxInt
@@ -37620,7 +37620,7 @@ func rewriteValuegeneric_OpNilCheck_0(v *Value) bool {
 		return true
 	}
 	// match: (NilCheck (Load (OffPtr [c] (SP)) (StaticCall {sym} _)) _)
-	// cond: isSameSym(sym, "runtime.newobject") && c == config.ctxt.FixedFrameSize() + config.RegSize && warnRule(fe.Debug_checknil(), v, "removed nil check")
+	// cond: isSameSym(sym, "runtime.newobject") && c == Config.ctxt.FixedFrameSize() + Config.RegSize && warnRule(fe.Debug_checknil(), v, "removed nil check")
 	// result: (Invalid)
 	for {
 		_ = v.Args[1]
@@ -37650,7 +37650,7 @@ func rewriteValuegeneric_OpNilCheck_0(v *Value) bool {
 		return true
 	}
 	// match: (NilCheck (OffPtr (Load (OffPtr [c] (SP)) (StaticCall {sym} _))) _)
-	// cond: isSameSym(sym, "runtime.newobject") && c == config.ctxt.FixedFrameSize() + config.RegSize && warnRule(fe.Debug_checknil(), v, "removed nil check")
+	// cond: isSameSym(sym, "runtime.newobject") && c == Config.ctxt.FixedFrameSize() + Config.RegSize && warnRule(fe.Debug_checknil(), v, "removed nil check")
 	// result: (Invalid)
 	for {
 		_ = v.Args[1]
@@ -40598,7 +40598,7 @@ func rewriteValuegeneric_OpPtrIndex_0(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (PtrIndex <t> ptr idx)
-	// cond: config.PtrSize == 4
+	// cond: Config.PtrSize == 4
 	// result: (AddPtr ptr (Mul32 <typ.Int> idx (Const32 <typ.Int> [t.Elem().Size()])))
 	for {
 		t := v.Type
@@ -40618,7 +40618,7 @@ func rewriteValuegeneric_OpPtrIndex_0(v *Value) bool {
 		return true
 	}
 	// match: (PtrIndex <t> ptr idx)
-	// cond: config.PtrSize == 8
+	// cond: Config.PtrSize == 8
 	// result: (AddPtr ptr (Mul64 <typ.Int> idx (Const64 <typ.Int> [t.Elem().Size()])))
 	for {
 		t := v.Type
@@ -43357,7 +43357,7 @@ func rewriteValuegeneric_OpStaticCall_0(v *Value) bool {
 	b := v.Block
 	config := b.Func.Config
 	// match: (StaticCall {sym} s1:(Store _ (Const64 [sz]) s2:(Store _ src s3:(Store {t} _ dst mem))))
-	// cond: isSameSym(sym,"runtime.memmove") && t.(*types.Type).IsPtr() && s1.Uses == 1 && s2.Uses == 1 && s3.Uses == 1 && isInlinableMemmove(dst,src,sz,config) && clobber(s1) && clobber(s2) && clobber(s3)
+	// cond: isSameSym(sym,"runtime.memmove") && t.(*types.Type).IsPtr() && s1.Uses == 1 && s2.Uses == 1 && s3.Uses == 1 && isInlinableMemmove(dst,src,sz,Config) && clobber(s1) && clobber(s2) && clobber(s3)
 	// result: (Move {t.(*types.Type).Elem()} [sz] dst src mem)
 	for {
 		sym := v.Aux
@@ -43396,7 +43396,7 @@ func rewriteValuegeneric_OpStaticCall_0(v *Value) bool {
 		return true
 	}
 	// match: (StaticCall {sym} s1:(Store _ (Const32 [sz]) s2:(Store _ src s3:(Store {t} _ dst mem))))
-	// cond: isSameSym(sym,"runtime.memmove") && t.(*types.Type).IsPtr() && s1.Uses == 1 && s2.Uses == 1 && s3.Uses == 1 && isInlinableMemmove(dst,src,sz,config) && clobber(s1) && clobber(s2) && clobber(s3)
+	// cond: isSameSym(sym,"runtime.memmove") && t.(*types.Type).IsPtr() && s1.Uses == 1 && s2.Uses == 1 && s3.Uses == 1 && isInlinableMemmove(dst,src,sz,Config) && clobber(s1) && clobber(s2) && clobber(s3)
 	// result: (Move {t.(*types.Type).Elem()} [sz] dst src mem)
 	for {
 		sym := v.Aux
@@ -43980,7 +43980,7 @@ func rewriteValuegeneric_OpStore_10(v *Value) bool {
 		return true
 	}
 	// match: (Store (Load (OffPtr [c] (SP)) mem) x mem)
-	// cond: isConstZero(x) && mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == config.ctxt.FixedFrameSize() + config.RegSize
+	// cond: isConstZero(x) && mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == Config.ctxt.FixedFrameSize() + Config.RegSize
 	// result: mem
 	for {
 		mem := v.Args[2]
@@ -44008,7 +44008,7 @@ func rewriteValuegeneric_OpStore_10(v *Value) bool {
 		return true
 	}
 	// match: (Store (OffPtr (Load (OffPtr [c] (SP)) mem)) x mem)
-	// cond: isConstZero(x) && mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == config.ctxt.FixedFrameSize() + config.RegSize
+	// cond: isConstZero(x) && mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == Config.ctxt.FixedFrameSize() + Config.RegSize
 	// result: mem
 	for {
 		mem := v.Args[2]
@@ -48223,7 +48223,7 @@ func rewriteValuegeneric_OpZero_0(v *Value) bool {
 	b := v.Block
 	config := b.Func.Config
 	// match: (Zero (Load (OffPtr [c] (SP)) mem) mem)
-	// cond: mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == config.ctxt.FixedFrameSize() + config.RegSize
+	// cond: mem.Op == OpStaticCall && isSameSym(mem.Aux, "runtime.newobject") && c == Config.ctxt.FixedFrameSize() + Config.RegSize
 	// result: mem
 	for {
 		mem := v.Args[1]

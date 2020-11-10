@@ -86,11 +86,11 @@ func TestCrashDumpsAllThreads(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	if err := ioutil.WriteFile(filepath.Join(dir, "main.go"), []byte(crashDumpsAllThreadsSource), 0666); err != nil {
+	if err := ioutil.WriteFile(filepath.Join(dir, "server.go"), []byte(crashDumpsAllThreadsSource), 0666); err != nil {
 		t.Fatalf("failed to create Go file: %v", err)
 	}
 
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {

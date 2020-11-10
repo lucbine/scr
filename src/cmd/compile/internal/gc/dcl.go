@@ -1047,7 +1047,7 @@ func newNowritebarrierrecChecker() *nowritebarrierrecChecker {
 
 	// Find all systemstack calls and record their targets. In
 	// general, flow analysis can't see into systemstack, but it's
-	// important to handle it for this check, so we model it
+	// important to handle it for this check, so we Models it
 	// directly. This has to happen before transformclosure since
 	// it's a lot harder to work out the argument after.
 	for _, n := range xtop {

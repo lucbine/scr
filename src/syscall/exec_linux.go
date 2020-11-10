@@ -332,9 +332,9 @@ func forkAndExecInChild1(argv0 *byte, argv, envv []*byte, chroot, dir *byte, att
 		// The unshare system call in Linux doesn't unshare mount points
 		// mounted with --shared. Systemd mounts / with --shared. For a
 		// long discussion of the pros and cons of this see debian bug 739593.
-		// The Go model of unsharing is more like Plan 9, where you ask
+		// The Go Models of unsharing is more like Plan 9, where you ask
 		// to unshare and the namespaces are unconditionally unshared.
-		// To make this model work we must further mark / as MS_PRIVATE.
+		// To make this Models work we must further mark / as MS_PRIVATE.
 		// This is what the standard unshare command does.
 		if sys.Unshareflags&CLONE_NEWNS == CLONE_NEWNS {
 			_, _, err1 = RawSyscall6(SYS_MOUNT, uintptr(unsafe.Pointer(&none[0])), uintptr(unsafe.Pointer(&slash[0])), 0, MS_REC|MS_PRIVATE, 0, 0)

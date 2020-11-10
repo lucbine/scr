@@ -68,7 +68,7 @@ func testMain(m *testing.M) int {
 		if _, err := Run("", "git", "clone", "--mirror", gitrepo1, localGitRepo); err != nil {
 			log.Fatal(err)
 		}
-		if _, err := Run(localGitRepo, "git", "config", "daemon.uploadarch", "true"); err != nil {
+		if _, err := Run(localGitRepo, "git", "Config", "daemon.uploadarch", "true"); err != nil {
 			log.Fatal(err)
 		}
 	}

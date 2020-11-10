@@ -86,7 +86,7 @@ function onTraceViewerImportFail() {
 (function() {
   var viewer;
   var url;
-  var model;
+  var Models;
 
   function load() {
     var req = new XMLHttpRequest();
@@ -118,19 +118,19 @@ function onTraceViewerImportFail() {
   }
 
   function onResult(result) {
-    model = new tr.Model();
+    Models = new tr.Model();
     var opts = new tr.importer.ImportOptions();
     opts.shiftWorldToZero = false;
-    var i = new tr.importer.Import(model, opts);
+    var i = new tr.importer.Import(Models, opts);
     var p = i.importTracesWithProgressDialog([result]);
     p.then(onModelLoaded, onImportFail);
   }
 
   function onModelLoaded() {
-    viewer.model = model;
+    viewer.Models = Models;
     viewer.viewTitle = "trace";
 
-    if (!model || model.bounds.isEmpty)
+    if (!Models || Models.bounds.isEmpty)
       return;
     var sel = window.location.hash.substr(1);
     if (sel === '')

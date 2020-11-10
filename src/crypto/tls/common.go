@@ -374,7 +374,7 @@ type ClientHelloInfo struct {
 	// connection to fail.
 	Conn net.Conn
 
-	// config is embedded by the GetCertificate or GetConfigForClient caller,
+	// Config is embedded by the GetCertificate or GetConfigForClient caller,
 	// for use with SupportsCertificate.
 	config *Config
 }
@@ -499,12 +499,12 @@ type Config struct {
 	// Uniquely for the fields in the returned Config, session ticket keys
 	// will be duplicated from the original Config if not set.
 	// Specifically, if SetSessionTicketKeys was called on the original
-	// config but not on the returned config then the ticket keys from the
-	// original config will be copied into the new config before use.
-	// Otherwise, if SessionTicketKey was set in the original config but
-	// not in the returned config then it will be copied into the returned
-	// config before use. If neither of those cases applies then the key
-	// material from the returned config will be used for session tickets.
+	// Config but not on the returned Config then the ticket keys from the
+	// original Config will be copied into the new Config before use.
+	// Otherwise, if SessionTicketKey was set in the original Config but
+	// not in the returned Config then it will be copied into the returned
+	// Config before use. If neither of those cases applies then the key
+	// material from the returned Config will be used for session tickets.
 	GetConfigForClient func(*ClientHelloInfo) (*Config, error)
 
 	// VerifyPeerCertificate, if not nil, is called after normal

@@ -5908,7 +5908,7 @@ type http2responseWriterState struct {
 	body   *http2requestBody // to close at end of request, if DATA frames didn't
 	conn   *http2serverConn
 
-	// TODO: adjust buffer writing sizes based on server config, frame size updates from peer, etc
+	// TODO: adjust buffer writing sizes based on server Config, frame size updates from peer, etc
 	bw *bufio.Writer // writing to a chunkWriter{this *responseWriterState}
 
 	// mutated by http.Handler goroutine:
@@ -9996,7 +9996,7 @@ type http2priorityWriteScheduler struct {
 	// maxClosedNodesInTree or maxIdleNodesInTree, old nodes are discarded.
 	closedNodes, idleNodes []*http2priorityNode
 
-	// From the config.
+	// From the Config.
 	maxClosedNodesInTree int
 	maxIdleNodesInTree   int
 	writeThrottleLimit   int32

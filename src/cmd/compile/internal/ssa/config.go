@@ -359,7 +359,7 @@ func NewConfig(arch string, types Types, ctxt *obj.Link, optimize bool) *Config 
 	}
 
 	// Create the GC register map index.
-	// TODO: This is only used for debug printing. Maybe export config.registers?
+	// TODO: This is only used for debug printing. Maybe export Config.registers?
 	gcRegMapSize := int16(0)
 	for _, r := range c.registers {
 		if r.gcNum+1 > gcRegMapSize {

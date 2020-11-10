@@ -229,10 +229,10 @@ func testEncodeAll(t *testing.T, go1Dot5Fields bool, useGlobalColorModel bool) {
 		t.Errorf("DecodeConfig inconsistent with DecodeAll")
 	}
 	if !palettesEqual(g1.Config.ColorModel.(color.Palette), globalColorModel.(color.Palette)) {
-		t.Errorf("unexpected global color model")
+		t.Errorf("unexpected global color Models")
 	}
 	if w, h := g1.Config.Width, g1.Config.Height; w != width || h != height {
-		t.Errorf("got config width * height = %d * %d, want %d * %d", w, h, width, height)
+		t.Errorf("got Config width * height = %d * %d, want %d * %d", w, h, width, height)
 	}
 
 	if g0.LoopCount != g1.LoopCount {

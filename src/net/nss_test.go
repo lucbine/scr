@@ -26,7 +26,7 @@ hosts:          files mdns4_minimal [NOTFOUND=return] dns mdns4
 networks:       files
 
 protocols:      db files
-services:       db files
+Services:       db files
 ethers:         db files
 rpc:            db files
 
@@ -140,7 +140,7 @@ func TestParseNSSConf(t *testing.T) {
 						{source: "db"},
 						{source: "files"},
 					},
-					"services": {
+					"Services": {
 						{source: "db"},
 						{source: "files"},
 					},

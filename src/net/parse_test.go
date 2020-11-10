@@ -12,12 +12,12 @@ import (
 )
 
 func TestReadLine(t *testing.T) {
-	// /etc/services file does not exist on android, plan9, windows.
+	// /etc/Services file does not exist on android, plan9, windows.
 	switch runtime.GOOS {
 	case "android", "plan9", "windows":
 		t.Skipf("not supported on %s", runtime.GOOS)
 	}
-	filename := "/etc/services" // a nice big file
+	filename := "/etc/Services" // a nice big file
 
 	fd, err := os.Open(filename)
 	if err != nil {

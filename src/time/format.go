@@ -14,7 +14,7 @@ import "errors"
 //	01/02 03:04:05PM '06 -0700
 // To define your own format, write down what the reference time would look
 // like formatted your way; see the values of constants like ANSIC,
-// StampMicro or Kitchen for examples. The model is to demonstrate what the
+// StampMicro or Kitchen for examples. The Models is to demonstrate what the
 // reference time looks like so that the Format and Parse methods can apply
 // the same transformation to a general time value.
 //

@@ -4,7 +4,7 @@
 
 // +build aix darwin dragonfly freebsd js,wasm linux netbsd openbsd solaris
 
-// Read system port mappings from /etc/services
+// Read system port mappings from /etc/Services
 
 package net
 
@@ -16,7 +16,7 @@ import (
 var onceReadServices sync.Once
 
 func readServices() {
-	file, err := open("/etc/services")
+	file, err := open("/etc/Services")
 	if err != nil {
 		return
 	}

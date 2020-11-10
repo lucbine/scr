@@ -17,7 +17,7 @@ func (a *A) AMethod(y int) *Server {
 	return nil
 }
 
-// FooServer is a server that provides Foo services
+// FooServer is a server that provides Foo Services
 type FooServer Server
 
 func (f *FooServer) WriteEvents(ctx context.Context, x int) error {

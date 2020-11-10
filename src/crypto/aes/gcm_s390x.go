@@ -135,7 +135,7 @@ func cryptBlocksGCM(fn code, key, dst, src, buf []byte, cnt *gcmCount)
 // count value. The length of dst must be greater than or equal to the length
 // of src.
 func (g *gcmAsm) counterCrypt(dst, src []byte, cnt *gcmCount) {
-	// Copying src into a buffer improves performance on some models when
+	// Copying src into a buffer improves performance on some Models when
 	// src and dst point to the same underlying array. We also need a
 	// buffer for counter values.
 	var ctrbuf, srcbuf [2048]byte

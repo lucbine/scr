@@ -455,11 +455,11 @@ func TestValidateRepoRoot(t *testing.T) {
 			ok:   false,
 		},
 		{
-			root: "-config",
+			root: "-Config",
 			ok:   false,
 		},
 		{
-			root: "-config://",
+			root: "-Config://",
 			ok:   false,
 		},
 	}

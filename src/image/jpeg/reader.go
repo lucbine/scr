@@ -680,7 +680,7 @@ func (d *decoder) decode(r io.Reader, configOnly bool) (image.Image, error) {
 // inversion is a no-op, so inversions might be implicit in the code below.
 func (d *decoder) applyBlack() (image.Image, error) {
 	if !d.adobeTransformValid {
-		return nil, UnsupportedError("unknown color model: 4-component JPEG doesn't have Adobe APP14 metadata")
+		return nil, UnsupportedError("unknown color Models: 4-component JPEG doesn't have Adobe APP14 metadata")
 	}
 
 	// If the 4-component JPEG image isn't explicitly marked as "Unknown (RGB
@@ -779,7 +779,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	return d.decode(r, false)
 }
 
-// DecodeConfig returns the color model and dimensions of a JPEG image without
+// DecodeConfig returns the color Models and dimensions of a JPEG image without
 // decoding the entire image.
 func DecodeConfig(r io.Reader) (image.Config, error) {
 	var d decoder

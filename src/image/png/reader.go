@@ -971,7 +971,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	return d.img, nil
 }
 
-// DecodeConfig returns the color model and dimensions of a PNG image without
+// DecodeConfig returns the color Models and dimensions of a PNG image without
 // decoding the entire image.
 func DecodeConfig(r io.Reader) (image.Config, error) {
 	d := &decoder{

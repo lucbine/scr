@@ -85,9 +85,9 @@ type Action struct {
 	buildID  string         // build ID of action output
 
 	VetxOnly  bool       // Mode=="vet": only being called to supply info about dependencies
-	needVet   bool       // Mode=="build": need to fill in vet config
+	needVet   bool       // Mode=="build": need to fill in vet Config
 	needBuild bool       // Mode=="build": need to do actual build (can be false if needVet is true)
-	vetCfg    *vetConfig // vet config
+	vetCfg    *vetConfig // vet Config
 	output    []byte     // output redirect buffer (nil means use b.Print)
 
 	// Execution state.
@@ -728,7 +728,7 @@ func (b *Builder) linkSharedAction(mode, depMode BuildMode, shlib string, a1 *Ac
 	shlib = filepath.Base(shlib)
 	a := b.cacheAction("build-shlib "+shlib, nil, func() *Action {
 		if a1 == nil {
-			// TODO(rsc): Need to find some other place to store config,
+			// TODO(rsc): Need to find some other place to store Config,
 			// not in pkg directory. See golang.org/issue/22196.
 			pkgs := readpkglist(fullShlib)
 			a1 = &Action{

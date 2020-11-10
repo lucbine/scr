@@ -6619,7 +6619,7 @@ func fieldIdx(n *Node) int {
 }
 
 // ssafn holds frontend information about a function that the backend is processing.
-// It also exports a bunch of compiler services for the ssa backend.
+// It also exports a bunch of compiler Services for the ssa backend.
 type ssafn struct {
 	curfn        *Node
 	strings      map[string]interface{} // map from constant string to data symbols

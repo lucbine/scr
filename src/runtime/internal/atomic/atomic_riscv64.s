@@ -15,12 +15,12 @@
 //
 //   - If both are set, the CPU may not reorder the instruction at all.
 //
-// These four modes correspond to other well-known memory models on other CPUs.
+// These four modes correspond to other well-known memory Models on other CPUs.
 // On ARM, aq corresponds to a dmb ishst, aq+rl corresponds to a dmb ish. On
 // Intel, aq corresponds to an lfence, rl to an sfence, and aq+rl to an mfence
 // (or a lock prefix).
 //
-// Go's memory model requires that
+// Go's memory Models requires that
 //   - if a read happens after a write, the read must observe the write, and
 //     that
 //   - if a read happens concurrently with a write, the read may observe the

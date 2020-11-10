@@ -81,7 +81,7 @@ debugger.SetAsync(True)
 target = debugger.CreateTargetWithFileAndArch("a.exe", None)
 if target:
   print "Created target"
-  main_bp = target.BreakpointCreateByLocation("main.go", 10)
+  main_bp = target.BreakpointCreateByLocation("server.go", 10)
   if main_bp:
     print "Created breakpoint"
   process = target.LaunchSimple(None, None, os.getcwd())
@@ -129,7 +129,7 @@ const expectedLldbOutput = `Created target
 Created breakpoint
 Process launched
 Hit breakpoint
-Stopped at main.go:10
+Stopped at server.go:10
 Stopped in main.main
 intvar = 42
 `
@@ -149,7 +149,7 @@ func TestLldbPython(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	src := filepath.Join(dir, "main.go")
+	src := filepath.Join(dir, "server.go")
 	err = ioutil.WriteFile(src, []byte(lldbHelloSource), 0644)
 	if err != nil {
 		t.Fatalf("failed to create src file: %v", err)

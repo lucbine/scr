@@ -107,7 +107,7 @@ type PackagePublic struct {
 	CgoCXXFLAGS  []string `json:",omitempty"` // cgo: flags for C++ compiler
 	CgoFFLAGS    []string `json:",omitempty"` // cgo: flags for Fortran compiler
 	CgoLDFLAGS   []string `json:",omitempty"` // cgo: flags for linker
-	CgoPkgConfig []string `json:",omitempty"` // cgo: pkg-config names
+	CgoPkgConfig []string `json:",omitempty"` // cgo: pkg-Config names
 
 	// Dependency information
 	Imports   []string          `json:",omitempty"` // import paths used by this package

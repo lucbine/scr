@@ -1929,7 +1929,7 @@ func (w *response) sendExpectationFailed() {
 	// TODO(bradfitz): let ServeHTTP handlers handle
 	// requests with non-standard expectation[s]? Seems
 	// theoretical at best, and doesn't fit into the
-	// current ServeHTTP model anyway. We'd need to
+	// current ServeHTTP Models anyway. We'd need to
 	// make the ResponseWriter an optional
 	// "ExpectReplier" interface or something.
 	//

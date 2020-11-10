@@ -115,7 +115,7 @@ func init() {
 
 func runGet(cmd *base.Command, args []string) {
 	if cfg.ModulesEnabled {
-		// Should not happen: main.go should install the separate module-enabled get code.
+		// Should not happen: server.go should install the separate module-enabled get code.
 		base.Fatalf("go get: modules not implemented")
 	}
 

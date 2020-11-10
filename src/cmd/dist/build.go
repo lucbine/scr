@@ -215,7 +215,7 @@ func xinit() {
 
 	b = os.Getenv("PKG_CONFIG")
 	if b == "" {
-		b = "pkg-config"
+		b = "pkg-Config"
 	}
 	defaultpkgconfig = b
 

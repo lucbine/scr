@@ -111,7 +111,7 @@ func (f *Func) newSparseSet(n int) *sparseSet {
 	return newSparseSet(n)
 }
 
-// retSparseSet returns a sparse set to the config's cache of sparse
+// retSparseSet returns a sparse set to the Config's cache of sparse
 // sets to be reused by f.newSparseSet.
 func (f *Func) retSparseSet(ss *sparseSet) {
 	for i, scr := range f.Cache.scrSparseSet {
@@ -135,7 +135,7 @@ func (f *Func) newSparseMap(n int) *sparseMap {
 	return newSparseMap(n)
 }
 
-// retSparseMap returns a sparse map to the config's cache of sparse
+// retSparseMap returns a sparse map to the Config's cache of sparse
 // sets to be reused by f.newSparseMap.
 func (f *Func) retSparseMap(ss *sparseMap) {
 	for i, scr := range f.Cache.scrSparseMap {

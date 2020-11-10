@@ -46,7 +46,7 @@ import (
 // expression (e.g., "new" or "make") is first mapped to a unique
 // "location."
 //
-// We also model every Go assignment as a directed edges between
+// We also Models every Go assignment as a directed edges between
 // locations. The number of dereference operations minus the number of
 // addressing operations is recorded as the edge's weight (termed
 // "derefs"). For example:
@@ -407,7 +407,7 @@ func (e *Escape) block(l Nodes) {
 	e.loopDepth = old
 }
 
-// expr models evaluating an expression n and flowing the result into
+// expr Models evaluating an expression n and flowing the result into
 // hole k.
 func (e *Escape) expr(k EscHole, n *Node) {
 	if n == nil {

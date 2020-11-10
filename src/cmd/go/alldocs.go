@@ -786,7 +786,7 @@
 //         CgoCXXFLAGS  []string // cgo: flags for C++ compiler
 //         CgoFFLAGS    []string // cgo: flags for Fortran compiler
 //         CgoLDFLAGS   []string // cgo: flags for linker
-//         CgoPkgConfig []string // cgo: pkg-config names
+//         CgoPkgConfig []string // cgo: pkg-Config names
 //
 //         // Dependency information
 //         Imports      []string          // import paths used by this package
@@ -1679,7 +1679,7 @@
 // 	FC
 // 		The command to use to compile Fortran code.
 // 	PKG_CONFIG
-// 		Path to pkg-config tool.
+// 		Path to pkg-Config tool.
 //
 // Architecture-specific environment variables:
 //

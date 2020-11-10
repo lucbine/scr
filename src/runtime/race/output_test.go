@@ -39,7 +39,7 @@ func TestOutput(t *testing.T) {
 			t.Fatalf("failed to create temp directory: %v", err)
 		}
 		defer os.RemoveAll(dir)
-		source := "main.go"
+		source := "server.go"
 		if test.run == "test" {
 			source = "main_test.go"
 		}
@@ -216,7 +216,7 @@ func main() {
   runtime\.slicebytetostring\(\)
       .*/runtime/string\.go:.*
   main\.main\.func1\(\)
-      .*/main.go:7`},
+      .*/server.go:7`},
 
 	// Test for https://golang.org/issue/33309
 	{"midstack_inlining_traceback", "run", "linux", "atexit_sleep_ms=0", `

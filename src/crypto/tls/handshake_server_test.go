@@ -528,7 +528,7 @@ type serverTest struct {
 	// expectedPeerCerts contains a list of PEM blocks of expected
 	// certificates from the client.
 	expectedPeerCerts []string
-	// config, if not nil, contains a custom Config to use for this test.
+	// Config, if not nil, contains a custom Config to use for this test.
 	config *Config
 	// expectHandshakeErrorIncluding, when not empty, contains a string
 	// that must be a substring of the error resulting from the handshake.

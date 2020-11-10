@@ -430,7 +430,7 @@ type Package struct {
 	CgoCXXFLAGS  []string // Cgo CXXFLAGS directives
 	CgoFFLAGS    []string // Cgo FFLAGS directives
 	CgoLDFLAGS   []string // Cgo LDFLAGS directives
-	CgoPkgConfig []string // Cgo pkg-config directives
+	CgoPkgConfig []string // Cgo pkg-Config directives
 
 	// Dependency information
 	Imports   []string                    // import paths from GoFiles, CgoFiles
@@ -1477,7 +1477,7 @@ func (ctxt *Context) shouldBuild(content []byte, allTags map[string]bool, binary
 }
 
 // saveCgo saves the information from the #cgo lines in the import "C" comment.
-// These lines set CFLAGS, CPPFLAGS, CXXFLAGS and LDFLAGS and pkg-config directives
+// These lines set CFLAGS, CPPFLAGS, CXXFLAGS and LDFLAGS and pkg-Config directives
 // that affect the way cgo's C code is built.
 func (ctxt *Context) saveCgo(filename string, di *Package, cg *ast.CommentGroup) error {
 	text := cg.Text()
@@ -1549,7 +1549,7 @@ func (ctxt *Context) saveCgo(filename string, di *Package, cg *ast.CommentGroup)
 			di.CgoFFLAGS = append(di.CgoFFLAGS, args...)
 		case "LDFLAGS":
 			di.CgoLDFLAGS = append(di.CgoLDFLAGS, args...)
-		case "pkg-config":
+		case "pkg-Config":
 			di.CgoPkgConfig = append(di.CgoPkgConfig, args...)
 		default:
 			return fmt.Errorf("%s: invalid #cgo verb: %s", filename, orig)

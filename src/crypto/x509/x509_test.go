@@ -1755,7 +1755,7 @@ func TestInsecureAlgorithmErrorString(t *testing.T) {
 }
 
 // These CSR was generated with OpenSSL:
-//  openssl req -out CSR.csr -new -sha256 -nodes -keyout privateKey.key -config openssl.cnf
+//  openssl req -out CSR.csr -new -sha256 -nodes -keyout privateKey.key -Config openssl.cnf
 //
 // With openssl.cnf containing the following sections:
 //   [ v3_req ]

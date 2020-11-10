@@ -312,7 +312,7 @@ func TestMapping(t *testing.T) {
 	testenv.MustHaveGoRun(t)
 	testenv.MustHaveCGO(t)
 
-	prog := "./testdata/mappingtest/main.go"
+	prog := "./testdata/mappingtest/server.go"
 
 	// GoOnly includes only Go symbols that runtime will symbolize.
 	// Go+C includes C symbols that runtime will not symbolize.

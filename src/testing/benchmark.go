@@ -21,6 +21,14 @@ import (
 	"unicode"
 )
 
+/*
+
+阅读前问题：
+b.N是如何自动调整的？
+内存统计是如何实现的？
+SetBytes()其使用场景是什么？
+*/
+
 func initBenchmarkFlags() {
 	matchBenchmarks = flag.String("test.bench", "", "run only benchmarks matching `regexp`")
 	benchmarkMemory = flag.Bool("test.benchmem", false, "print memory allocations for benchmarks")
@@ -93,23 +101,23 @@ type B struct {
 	common
 	importPath       string // import path of the package containing the benchmark
 	context          *benchContext
-	N                int
+	N                int           //每个测试中用户代码执行次数
 	previousN        int           // number of iterations in the previous run
 	previousDuration time.Duration // total duration of the previous run
-	benchFunc        func(b *B)
-	benchTime        benchTimeFlag
-	bytes            int64
-	missingBytes     bool // one of the subbenchmarks does not have bytes set.
-	timerOn          bool
-	showAllocResult  bool
+	benchFunc        func(b *B)    //测试函数
+	benchTime        benchTimeFlag //性能测试最少执行时间，默认为1s，可以通过能数-benchtime 2s指定
+	bytes            int64         //每次迭代处理的字节数
+	missingBytes     bool          // one of the subbenchmarks does not have bytes set.
+	timerOn          bool          //计时启动标志，默认为false，启动计时为true
+	showAllocResult  bool          //是否展示分配的结果
 	result           BenchmarkResult
 	parallelism      int // RunParallel creates parallelism*GOMAXPROCS goroutines
 	// The initial states of memStats.Mallocs and memStats.TotalAlloc.
-	startAllocs uint64
-	startBytes  uint64
+	startAllocs uint64 //测试启动时记录堆中分配的对象数
+	startBytes  uint64 //测试启动时记录堆中分配的字节数
 	// The net total of this test after being run.
-	netAllocs uint64
-	netBytes  uint64
+	netAllocs uint64 //测试结束后记录堆中新增加的对象数
+	netBytes  uint64 //测试对事后记录堆中新增加的字节数
 	// Extra metrics collected by ReportMetric.
 	extra map[string]float64
 }
@@ -117,32 +125,39 @@ type B struct {
 // StartTimer starts timing a test. This function is called automatically
 // before a benchmark starts, but it can also be used to resume timing after
 // a call to StopTimer.
+
+//StartTimer()负责启动计时并初始化内存相关计数，测试执行时会自动调用，一般不需要用户启动。
+//StartTimer()负责启动计时，并记录当前内存分配情况，不管是否有“-benchmem”参数，内存都会被统计，参数只决定是否要在结果中输出。
+
 func (b *B) StartTimer() {
 	if !b.timerOn {
-		runtime.ReadMemStats(&memStats)
-		b.startAllocs = memStats.Mallocs
-		b.startBytes = memStats.TotalAlloc
-		b.start = time.Now()
-		b.timerOn = true
+		runtime.ReadMemStats(&memStats)    //读取当前堆内存分配信息
+		b.startAllocs = memStats.Mallocs   //记录当前堆内存分配的对象数
+		b.startBytes = memStats.TotalAlloc //记录当前堆内存分配的字节数
+		b.start = time.Now()               //记录测试启动时间
+		b.timerOn = true                   //标记计时标志
 	}
 }
 
 // StopTimer stops timing a test. This can be used to pause the timer
 // while performing complex initialization that you don't
 // want to measure.
+
+//需要注意的是，StopTimer()并不一定是测试结束，一个测试中有可能有多个统计阶段，所以其统计值是累加的。
 func (b *B) StopTimer() {
 	if b.timerOn {
-		b.duration += time.Since(b.start)
-		runtime.ReadMemStats(&memStats)
-		b.netAllocs += memStats.Mallocs - b.startAllocs
-		b.netBytes += memStats.TotalAlloc - b.startBytes
-		b.timerOn = false
+		b.duration += time.Since(b.start)                //累加测试耗时
+		runtime.ReadMemStats(&memStats)                  //读取当前堆内存分配信息
+		b.netAllocs += memStats.Mallocs - b.startAllocs  // 累加堆内存分配的对象数
+		b.netBytes += memStats.TotalAlloc - b.startBytes // 累加堆内存分配的字节数
+		b.timerOn = false                                // 标记计时标志
 	}
 }
 
 // ResetTimer zeroes the elapsed benchmark time and memory allocation counters
 // and deletes user-reported metrics.
 // It does not affect whether the timer is running.
+//ResetTimer()比较常用，典型使用场景是一个测试中，初始化部分耗时较长，初始化后再开始计时
 func (b *B) ResetTimer() {
 	if b.extra == nil {
 		// Allocate the extra map before reading memory stats.
@@ -154,14 +169,14 @@ func (b *B) ResetTimer() {
 		}
 	}
 	if b.timerOn {
-		runtime.ReadMemStats(&memStats)
-		b.startAllocs = memStats.Mallocs
-		b.startBytes = memStats.TotalAlloc
-		b.start = time.Now()
+		runtime.ReadMemStats(&memStats)    // 读取当前堆内存分配信息
+		b.startAllocs = memStats.Mallocs   // 记录当前堆内存分配的对象数
+		b.startBytes = memStats.TotalAlloc // 记录当前堆内存分配的字节数
+		b.start = time.Now()               // 记录测试启动时间
 	}
-	b.duration = 0
-	b.netAllocs = 0
-	b.netBytes = 0
+	b.duration = 0  // 清空耗时
+	b.netAllocs = 0 // 清空内存分配对象数
+	b.netBytes = 0  // 清空内存分配字节数
 }
 
 // SetBytes records the number of bytes processed in a single operation.
@@ -297,7 +312,7 @@ func (b *B) launch() {
 		for n := int64(1); !b.failed && b.duration < d && n < 1e9; {
 			last := n
 			// Predict required iterations.
-			goalns := d.Nanoseconds()
+			goalns := d.Nanoseconds() //预测接下来要执行多少次，b.benchTime/每个操作耗时
 			prevIters := int64(b.N)
 			prevns := b.duration.Nanoseconds()
 			if prevns <= 0 {
@@ -311,7 +326,7 @@ func (b *B) launch() {
 			// So multiply first, then divide.
 			n = goalns * prevIters / prevns
 			// Run more iterations than we think we'll need (1.2x).
-			n += n / 5
+			n += n / 5 // 避免增长较快，先增长20%，至少增长1次
 			// Don't grow too fast in case we had timing errors previously.
 			n = min(n, 100*last)
 			// Be sure to run at least one more than last time.

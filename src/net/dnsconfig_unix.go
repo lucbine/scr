@@ -4,7 +4,7 @@
 
 // +build aix darwin dragonfly freebsd linux netbsd openbsd solaris
 
-// Read system DNS config from /etc/resolv.conf
+// Read system DNS Config from /etc/resolv.conf
 
 package net
 

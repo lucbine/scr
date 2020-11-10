@@ -52,7 +52,7 @@ var (
 // and willing to insert at most maxLoopPad bytes of NOP to do so.
 // We define a loop entry as the target of a backward jump.
 //
-// gcc uses maxLoopPad = 10 for its 'generic x86-64' config,
+// gcc uses maxLoopPad = 10 for its 'generic x86-64' Config,
 // and it aligns all jump targets, not just backward jump targets.
 //
 // As of 6/1/2012, the effect of setting maxLoopPad = 10 here
@@ -2263,7 +2263,7 @@ func prefixof(ctxt *obj.Link, a *obj.Addr) int {
 			// NOTE: Systems listed here should be only systems that
 			// support direct TLS references like 8(TLS) implemented as
 			// direct references from FS or GS. Systems that require
-			// the initial-exec model, where you load the TLS base into
+			// the initial-exec Models, where you load the TLS base into
 			// a register and then index from that register, do not reach
 			// this code and should not be listed.
 			if ctxt.Arch.Family == sys.I386 {
@@ -4830,7 +4830,7 @@ func (ab *AsmBuf) doasm(ctxt *obj.Link, cursym *obj.LSym, p *obj.Prog) {
 						}
 					}
 
-				// NOTE: The systems listed here are the ones that use the "TLS initial exec" model,
+				// NOTE: The systems listed here are the ones that use the "TLS initial exec" Models,
 				// where you load the TLS base register into a register and then index off that
 				// register to access the actual TLS variables. Systems that allow direct TLS access
 				// are handled in prefixof above and should not be listed here.
@@ -4840,7 +4840,7 @@ func (ab *AsmBuf) doasm(ctxt *obj.Link, cursym *obj.LSym, p *obj.Prog) {
 					}
 
 					if ctxt.Arch.Family == sys.I386 {
-						// NOTE: The systems listed here are the ones that use the "TLS initial exec" model,
+						// NOTE: The systems listed here are the ones that use the "TLS initial exec" Models,
 						// where you load the TLS base register into a register and then index off that
 						// register to access the actual TLS variables. Systems that allow direct TLS access
 						// are handled in prefixof above and should not be listed here.

@@ -32,16 +32,16 @@ type Server struct {
 	// NewUnstartedServer and calling Server.StartTLS.
 	EnableHTTP2 bool
 
-	// TLS is the optional TLS configuration, populated with a new config
+	// TLS is the optional TLS configuration, populated with a new Config
 	// after TLS is started. If set on an unstarted server before StartTLS
-	// is called, existing fields are copied into the new config.
+	// is called, existing fields are copied into the new Config.
 	TLS *tls.Config
 
 	// Config may be changed after calling NewUnstartedServer and
 	// before Start or StartTLS.
 	Config *http.Server
 
-	// certificate is a parsed version of the TLS config certificate, if present.
+	// certificate is a parsed version of the TLS Config certificate, if present.
 	certificate *x509.Certificate
 
 	// wg counts the number of outstanding HTTP requests on this server.

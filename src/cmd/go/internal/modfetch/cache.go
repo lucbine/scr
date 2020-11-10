@@ -419,7 +419,7 @@ func readDiskStat(path, rev string) (file string, info *RevInfo, err error) {
 		// tagged version.
 		//
 		// In practice, we're only looking up by hash during initial conversion of a
-		// legacy config and during an explicit 'go get', and a little extra latency
+		// legacy Config and during an explicit 'go get', and a little extra latency
 		// for those operations seems worth the benefit of picking up more accurate
 		// versions.
 		//

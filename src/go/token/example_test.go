@@ -35,7 +35,7 @@ func ok(pos p) bool {
 }
 `
 
-	f, err := parser.ParseFile(fset, "main.go", src, 0)
+	f, err := parser.ParseFile(fset, "server.go", src, 0)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -68,10 +68,10 @@ func ok(pos p) bool {
 
 	//Output:
 	//
-	// main.go:3:1: import
-	// main.go:5:1: import
-	// main.go:1:5[main.go:8:1]: type
-	// main.go:3:1[main.go:10:1]: const
-	// fake.go:42:11[main.go:13:1]: func
-	// fake.go:7:9[main.go:17:14]: func
+	// server.go:3:1: import
+	// server.go:5:1: import
+	// server.go:1:5[server.go:8:1]: type
+	// server.go:3:1[server.go:10:1]: const
+	// fake.go:42:11[server.go:13:1]: func
+	// fake.go:7:9[server.go:17:14]: func
 }

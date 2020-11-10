@@ -317,7 +317,7 @@ var gcMarkWorkerModeStrings = [...]string{
 	"GC (idle)",
 }
 
-// gcController implements the GC pacing controller that determines
+// gcController implements the GC pacing Controller that determines
 // when to trigger concurrent garbage collection and how much marking
 // work to do in mutator assists and background marking.
 //
@@ -407,7 +407,7 @@ type gcControllerState struct {
 	_ cpu.CacheLinePad
 }
 
-// startCycle resets the GC controller's state and computes estimates
+// startCycle resets the GC Controller's state and computes estimates
 // for a new GC cycle. The caller must hold worldsema.
 func (c *gcControllerState) startCycle() {
 	c.scanWork = 0
@@ -565,7 +565,7 @@ func (c *gcControllerState) endCycle() float64 {
 		return memstats.triggerRatio
 	}
 
-	// Proportional response gain for the trigger controller. Must
+	// Proportional response gain for the trigger Controller. Must
 	// be in [0, 1]. Lower values smooth out transient effects but
 	// take longer to respond to phase changes. Higher values
 	// react to phase changes quickly, but are more affected by
@@ -599,7 +599,7 @@ func (c *gcControllerState) endCycle() float64 {
 	triggerRatio := memstats.triggerRatio + triggerGain*triggerError
 
 	if debug.gcpacertrace > 0 {
-		// Print controller state in terms of the design
+		// Print Controller state in terms of the design
 		// document.
 		H_m_prev := memstats.heap_marked
 		h_t := memstats.triggerRatio
@@ -919,7 +919,7 @@ const gcGoalUtilization = 0.30
 // goal.
 //
 // Setting this to < gcGoalUtilization avoids saturating the trigger
-// feedback controller when there are no assists, which allows it to
+// feedback Controller when there are no assists, which allows it to
 // better control CPU and heap growth. However, the larger the gap,
 // the more mutator assists are expected to happen, which impact
 // mutator latency.
@@ -1179,7 +1179,7 @@ type gcTriggerKind int
 const (
 	// gcTriggerHeap indicates that a cycle should be started when
 	// the heap size reaches the trigger heap size computed by the
-	// controller.
+	// Controller.
 	gcTriggerHeap gcTriggerKind = iota
 
 	// gcTriggerTime indicates that a cycle should be started when

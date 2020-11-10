@@ -87,7 +87,7 @@ func progedit(ctxt *obj.Link, p *obj.Prog, newprog obj.ProgAlloc) {
 	//         MOVQ 0(TLS), CX // load g into CX
 	//
 	// The 2-instruction and 1-instruction forms correspond to the two code
-	// sequences for loading a TLS variable in the local exec model given in "ELF
+	// sequences for loading a TLS variable in the local exec Models given in "ELF
 	// Handling For Thread-Local Storage".
 	//
 	// We apply this rewrite on systems that support the 1-instruction form.

@@ -569,7 +569,7 @@ Environment variables for use with cgo:
 	FC
 		The command to use to compile Fortran code.
 	PKG_CONFIG
-		Path to pkg-config tool.
+		Path to pkg-Config tool.
 
 Architecture-specific environment variables:
 

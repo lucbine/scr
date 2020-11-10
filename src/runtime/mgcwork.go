@@ -37,7 +37,7 @@ func init() {
 
 // Garbage collector work pool abstraction.
 //
-// This implements a producer/consumer model for pointers to grey
+// This implements a producer/consumer Models for pointers to grey
 // objects. A grey object is one that is marked and on a work
 // queue. A black object is marked and not on a work queue.
 //
@@ -197,7 +197,7 @@ func (w *gcWork) put(obj uintptr) {
 	wbuf.obj[wbuf.nobj] = obj
 	wbuf.nobj++
 
-	// If we put a buffer on full, let the GC controller know so
+	// If we put a buffer on full, let the GC Controller know so
 	// it can encourage more workers to run. We delay this until
 	// the end of put so that w is in a consistent state, since
 	// enlistWorker may itself manipulate w.

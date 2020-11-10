@@ -618,7 +618,7 @@ func DecodeAll(r io.Reader) (*GIF, error) {
 	return gif, nil
 }
 
-// DecodeConfig returns the global color model and dimensions of a GIF image
+// DecodeConfig returns the global color Models and dimensions of a GIF image
 // without decoding the entire image.
 func DecodeConfig(r io.Reader) (image.Config, error) {
 	var d decoder

@@ -69,7 +69,7 @@ var (
 // It returns "off" if the cache is disabled.
 func DefaultDir() string {
 	// Save the result of the first call to DefaultDir for later use in
-	// initDefaultCache. cmd/go/main.go explicitly sets GOCACHE so that
+	// initDefaultCache. cmd/go/server.go explicitly sets GOCACHE so that
 	// subprocesses will inherit it, but that means initDefaultCache can't
 	// otherwise distinguish between an explicit "off" and a UserCacheDir error.
 

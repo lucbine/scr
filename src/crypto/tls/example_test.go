@@ -219,7 +219,7 @@ func ExampleConfig_verifyPeerCertificate() {
 		}
 
 		opts := x509.VerifyOptions{
-			Roots:         config.RootCAs, // On the server side, use config.ClientCAs.
+			Roots:         config.RootCAs, // On the server side, use Config.ClientCAs.
 			DNSName:       config.ServerName,
 			Intermediates: x509.NewCertPool(),
 			// On the server side, set KeyUsages to ExtKeyUsageClientAuth. The

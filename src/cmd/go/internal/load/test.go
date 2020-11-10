@@ -142,7 +142,7 @@ func TestPackagesAndErrors(p *Package, cover *TestCover) (pmain, ptest, pxtest *
 		ptest.GoFiles = append(ptest.GoFiles, p.GoFiles...)
 		ptest.GoFiles = append(ptest.GoFiles, p.TestGoFiles...)
 		ptest.Target = ""
-		// Note: The preparation of the vet config requires that common
+		// Note: The preparation of the vet Config requires that common
 		// indexes in ptest.Imports and ptest.Internal.RawImports
 		// all line up (but RawImports can be shorter than the others).
 		// That is, for 0 ≤ i < len(RawImports),

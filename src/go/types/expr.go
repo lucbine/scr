@@ -190,7 +190,7 @@ func roundFloat64(x constant.Value) constant.Value {
 //
 // The check parameter may be nil if representableConst is invoked
 // (indirectly) through an exported API call (AssignableTo, ConvertibleTo)
-// because we don't need the Checker's config for those calls.
+// because we don't need the Checker's Config for those calls.
 func representableConst(x constant.Value, check *Checker, typ *Basic, rounded *constant.Value) bool {
 	if x.Kind() == constant.Unknown {
 		return true // avoid follow-up errors

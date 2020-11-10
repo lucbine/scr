@@ -913,7 +913,7 @@ func loadobjfile(ctxt *Link, lib *sym.Library) {
 	 * load all the object files from the archive now.
 	 * this gives us sequential file access and keeps us
 	 * from needing to come back later to pick up more
-	 * objects.  it breaks the usual C archive model, but
+	 * objects.  it breaks the usual C archive Models, but
 	 * this is Go, not C.  the common case in Go is that
 	 * we need to load all the objects, and then we throw away
 	 * the individual symbols that are unused.

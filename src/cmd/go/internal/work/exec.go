@@ -477,7 +477,7 @@ func (b *Builder) build(a *Action) (err error) {
 		}
 	}
 
-	// Load cached vet config, but only if that's all we have left
+	// Load cached vet Config, but only if that's all we have left
 	// (need == needVet, not testing just the one bit).
 	// If we are going to do a full build anyway,
 	// we're going to regenerate the files below anyway.
@@ -625,7 +625,7 @@ func (b *Builder) build(a *Action) (err error) {
 		return &load.NoGoError{Package: a.Package}
 	}
 
-	// Prepare Go vet config if needed.
+	// Prepare Go vet Config if needed.
 	if need&needVet != 0 {
 		buildVetConfig(a, srcfiles)
 		need &^= needVet
@@ -647,14 +647,14 @@ func (b *Builder) build(a *Action) (err error) {
 		return err
 	}
 
-	// Prepare Go import config.
+	// Prepare Go import Config.
 	// We start it off with a comment so it can't be empty, so icfg.Bytes() below is never nil.
 	// It should never be empty anyway, but there have been bugs in the past that resulted
-	// in empty configs, which then unfortunately turn into "no config passed to compiler",
+	// in empty configs, which then unfortunately turn into "no Config passed to compiler",
 	// and the compiler falls back to looking in pkg itself, which mostly works,
 	// except when it doesn't.
 	var icfg bytes.Buffer
-	fmt.Fprintf(&icfg, "# import config\n")
+	fmt.Fprintf(&icfg, "# import Config\n")
 	for i, raw := range a.Package.Internal.RawImports {
 		final := a.Package.Imports[i]
 		if final != raw {
@@ -949,7 +949,7 @@ func buildVetConfig(a *Action, srcfiles []string) {
 		vcfg.ImportMap[raw] = final
 	}
 
-	// Compute the list of mapped imports in the vet config
+	// Compute the list of mapped imports in the vet Config
 	// so that we can add any missing mappings below.
 	vcfgMapped := make(map[string]bool)
 	for _, p := range vcfg.ImportMap {
@@ -1001,8 +1001,8 @@ func (b *Builder) vet(a *Action) error {
 
 	vcfg := a.Deps[0].vetCfg
 	if vcfg == nil {
-		// Vet config should only be missing if the build failed.
-		return fmt.Errorf("vet config not found")
+		// Vet Config should only be missing if the build failed.
+		return fmt.Errorf("vet Config not found")
 	}
 
 	vcfg.VetxOnly = a.VetxOnly
@@ -1068,7 +1068,7 @@ func (b *Builder) vet(a *Action) error {
 
 	js, err := json.MarshalIndent(vcfg, "", "\t")
 	if err != nil {
-		return fmt.Errorf("internal error marshaling vet config: %v", err)
+		return fmt.Errorf("internal error marshaling vet Config: %v", err)
 	}
 	js = append(js, '\n')
 	if err := b.writeFile(a.Objdir+"vet.cfg", js); err != nil {
@@ -1139,7 +1139,7 @@ func (b *Builder) linkActionID(a *Action) cache.ActionID {
 	return h.Sum()
 }
 
-// printLinkerConfig prints the linker config into the hash h,
+// printLinkerConfig prints the linker Config into the hash h,
 // as part of the computation of a linker-related action ID.
 func (b *Builder) printLinkerConfig(h io.Writer, p *load.Package) {
 	switch cfg.BuildToolchainName {
@@ -1244,13 +1244,13 @@ func (b *Builder) writeLinkImportcfg(a *Action, file string) error {
 	return b.writeFile(file, icfg.Bytes())
 }
 
-// PkgconfigCmd returns a pkg-config binary name
+// PkgconfigCmd returns a pkg-Config binary name
 // defaultPkgConfig is defined in zdefaultcc.go, written by cmd/dist.
 func (b *Builder) PkgconfigCmd() string {
 	return envList("PKG_CONFIG", cfg.DefaultPkgConfig)[0]
 }
 
-// splitPkgConfigOutput parses the pkg-config output into a slice of
+// splitPkgConfigOutput parses the pkg-Config output into a slice of
 // flags. This implements the algorithm from pkgconf/libpkgconf/argvsplit.c.
 func splitPkgConfigOutput(out []byte) ([]string, error) {
 	if len(out) == 0 {
@@ -1311,10 +1311,10 @@ func splitPkgConfigOutput(out []byte) ([]string, error) {
 	return flags, nil
 }
 
-// Calls pkg-config if needed and returns the cflags/ldflags needed to build the package.
+// Calls pkg-Config if needed and returns the cflags/ldflags needed to build the package.
 func (b *Builder) getPkgConfigFlags(p *load.Package) (cflags, ldflags []string, err error) {
 	if pcargs := p.CgoPkgConfig; len(pcargs) > 0 {
-		// pkg-config permits arguments to appear anywhere in
+		// pkg-Config permits arguments to appear anywhere in
 		// the command line. Move them all to the front, before --.
 		var pcflags []string
 		var pkgs []string
@@ -1329,7 +1329,7 @@ func (b *Builder) getPkgConfigFlags(p *load.Package) (cflags, ldflags []string, 
 		}
 		for _, pkg := range pkgs {
 			if !load.SafeArg(pkg) {
-				return nil, nil, fmt.Errorf("invalid pkg-config package name: %s", pkg)
+				return nil, nil, fmt.Errorf("invalid pkg-Config package name: %s", pkg)
 			}
 		}
 		var out []byte
@@ -1344,7 +1344,7 @@ func (b *Builder) getPkgConfigFlags(p *load.Package) (cflags, ldflags []string, 
 			if err != nil {
 				return nil, nil, err
 			}
-			if err := checkCompilerFlags("CFLAGS", "pkg-config --cflags", cflags); err != nil {
+			if err := checkCompilerFlags("CFLAGS", "pkg-Config --cflags", cflags); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -1356,7 +1356,7 @@ func (b *Builder) getPkgConfigFlags(p *load.Package) (cflags, ldflags []string, 
 		}
 		if len(out) > 0 {
 			ldflags = strings.Fields(string(out))
-			if err := checkLinkerFlags("LDFLAGS", "pkg-config --libs", ldflags); err != nil {
+			if err := checkLinkerFlags("LDFLAGS", "pkg-Config --libs", ldflags); err != nil {
 				return nil, nil, err
 			}
 		}

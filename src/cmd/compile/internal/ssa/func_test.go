@@ -23,7 +23,7 @@
 //       Bloc("exit",
 //           Exit("mem")),
 //       Bloc("deadblock",
-//          Valu("deadval", OpConstBool, c.config.Types.Bool, 0, true),
+//          Valu("deadval", OpConstBool, c.Config.Types.Bool, 0, true),
 //          If("deadval", "deadblock", "exit")))
 //
 // and the Blocks or Values used in the Func can be accessed

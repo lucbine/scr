@@ -6,7 +6,7 @@ package rpc
 
 /*
 	Some HTML presented at http://machine:port/debug/rpc
-	Lists services, their methods, and some statistics, still rudimentary.
+	Lists Services, their methods, and some statistics, still rudimentary.
 */
 
 import (

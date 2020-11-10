@@ -17,7 +17,7 @@ func rewriteValuedecArgs_OpArg_0(v *Value) bool {
 	typ := &b.Func.Config.Types
 	// match: (Arg {n} [off])
 	// cond: v.Type.IsString()
-	// result: (StringMake (Arg <typ.BytePtr> {n} [off]) (Arg <typ.Int> {n} [off+config.PtrSize]))
+	// result: (StringMake (Arg <typ.BytePtr> {n} [off]) (Arg <typ.Int> {n} [off+Config.PtrSize]))
 	for {
 		off := v.AuxInt
 		n := v.Aux
@@ -37,7 +37,7 @@ func rewriteValuedecArgs_OpArg_0(v *Value) bool {
 	}
 	// match: (Arg {n} [off])
 	// cond: v.Type.IsSlice()
-	// result: (SliceMake (Arg <v.Type.Elem().PtrTo()> {n} [off]) (Arg <typ.Int> {n} [off+config.PtrSize]) (Arg <typ.Int> {n} [off+2*config.PtrSize]))
+	// result: (SliceMake (Arg <v.Type.Elem().PtrTo()> {n} [off]) (Arg <typ.Int> {n} [off+Config.PtrSize]) (Arg <typ.Int> {n} [off+2*Config.PtrSize]))
 	for {
 		off := v.AuxInt
 		n := v.Aux
@@ -61,7 +61,7 @@ func rewriteValuedecArgs_OpArg_0(v *Value) bool {
 	}
 	// match: (Arg {n} [off])
 	// cond: v.Type.IsInterface()
-	// result: (IMake (Arg <typ.Uintptr> {n} [off]) (Arg <typ.BytePtr> {n} [off+config.PtrSize]))
+	// result: (IMake (Arg <typ.Uintptr> {n} [off]) (Arg <typ.BytePtr> {n} [off+Config.PtrSize]))
 	for {
 		off := v.AuxInt
 		n := v.Aux

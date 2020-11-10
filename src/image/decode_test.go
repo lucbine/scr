@@ -128,7 +128,7 @@ loop:
 			continue loop
 		}
 		if m.ColorModel() != c.ColorModel {
-			t.Errorf("%s: color models differ", it.filename)
+			t.Errorf("%s: color Models differ", it.filename)
 			continue loop
 		}
 	}

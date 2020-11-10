@@ -75,7 +75,7 @@ func interfaceTable(ifindex int) ([]Interface, error) {
 			case windows.IF_TYPE_SOFTWARE_LOOPBACK:
 				ifi.Flags |= FlagLoopback | FlagMulticast
 			case windows.IF_TYPE_ATM:
-				ifi.Flags |= FlagBroadcast | FlagPointToPoint | FlagMulticast // assume all services available; LANE, point-to-point and point-to-multipoint
+				ifi.Flags |= FlagBroadcast | FlagPointToPoint | FlagMulticast // assume all Services available; LANE, point-to-point and point-to-multipoint
 			}
 			if aa.Mtu == 0xffffffff {
 				ifi.MTU = -1

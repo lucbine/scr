@@ -154,7 +154,7 @@ func Compile(f *Func) {
 	phaseName = ""
 }
 
-// TODO: should be a config field
+// TODO: should be a Config field
 var dumpFileSeq int
 
 // dumpFile creates a file from the phase name and function name

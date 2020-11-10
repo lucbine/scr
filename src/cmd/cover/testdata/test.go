@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // This program is processed by the cover command, and then testAll is called.
-// The test driver in main.go can then compare the coverage statistics with expectation.
+// The test driver in server.go can then compare the coverage statistics with expectation.
 
 // The word LINE is replaced by the line number in this file. When the file is executed,
 // the coverage processing has changed the line numbers, so we can't use runtime.Caller.
@@ -32,10 +32,10 @@ func testAll() {
 	testGoto()
 }
 
-// The indexes of the counters in testPanic are known to main.go
+// The indexes of the counters in testPanic are known to server.go
 const panicIndex = 3
 
-// This test appears first because the index of its counters is known to main.go
+// This test appears first because the index of its counters is known to server.go
 func testPanic() {
 	defer func() {
 		recover()

@@ -29,7 +29,7 @@ import (
 
 // Server returns a new TLS server side connection
 // using conn as the underlying transport.
-// The configuration config must be non-nil and must include
+// The configuration Config must be non-nil and must include
 // at least one certificate or else set GetCertificate.
 func Server(conn net.Conn, config *Config) *Conn {
 	return &Conn{conn: conn, config: config}
@@ -37,8 +37,8 @@ func Server(conn net.Conn, config *Config) *Conn {
 
 // Client returns a new TLS client side connection
 // using conn as the underlying transport.
-// The config cannot be nil: users must set either ServerName or
-// InsecureSkipVerify in the config.
+// The Config cannot be nil: users must set either ServerName or
+// InsecureSkipVerify in the Config.
 func Client(conn net.Conn, config *Config) *Conn {
 	return &Conn{conn: conn, config: config, isClient: true}
 }
@@ -61,7 +61,7 @@ func (l *listener) Accept() (net.Conn, error) {
 
 // NewListener creates a Listener which accepts connections from an inner
 // Listener and wraps each connection with Server.
-// The configuration config must be non-nil and must include
+// The configuration Config must be non-nil and must include
 // at least one certificate or else set GetCertificate.
 func NewListener(inner net.Listener, config *Config) net.Listener {
 	l := new(listener)
@@ -72,7 +72,7 @@ func NewListener(inner net.Listener, config *Config) net.Listener {
 
 // Listen creates a TLS listener accepting connections on the
 // given network address using net.Listen.
-// The configuration config must be non-nil and must include
+// The configuration Config must be non-nil and must include
 // at least one certificate or else set GetCertificate.
 func Listen(network, laddr string, config *Config) (net.Listener, error) {
 	if config == nil || len(config.Certificates) == 0 &&

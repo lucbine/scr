@@ -712,7 +712,7 @@ var altConfigs = []string{
 	"vendor/manifest",
 	"vendor/vendor.json",
 
-	".git/config",
+	".git/Config",
 }
 
 func findModuleRoot(dir string) (root string) {
@@ -744,7 +744,7 @@ func findAltConfig(dir string) (root, name string) {
 		for _, name := range altConfigs {
 			if fi, err := os.Stat(filepath.Join(dir, name)); err == nil && !fi.IsDir() {
 				if rel := search.InDir(dir, cfg.BuildContext.GOROOT); rel == "." {
-					// Don't suggest creating a module from $GOROOT/.git/config.
+					// Don't suggest creating a module from $GOROOT/.git/Config.
 					return "", ""
 				}
 				return dir, name

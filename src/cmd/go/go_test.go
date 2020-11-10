@@ -1674,12 +1674,12 @@ func TestLdflagsArgumentsWithSpacesIssue3941(t *testing.T) {
 	tg := testgo(t)
 	defer tg.cleanup()
 	tg.parallel()
-	tg.tempFile("main.go", `package main
+	tg.tempFile("server.go", `package main
 		var extern string
 		func main() {
 			println(extern)
 		}`)
-	tg.run("run", "-ldflags", `-X "main.extern=hello world"`, tg.path("main.go"))
+	tg.run("run", "-ldflags", `-X "main.extern=hello world"`, tg.path("server.go"))
 	tg.grepStderr("^hello world", `ldflags -X "main.extern=hello world"' failed`)
 }
 
@@ -1858,9 +1858,9 @@ func TestInstallWithTags(t *testing.T) {
 	defer tg.cleanup()
 	tg.parallel()
 	tg.tempDir("bin")
-	tg.tempFile("src/example/a/main.go", `package main
+	tg.tempFile("src/example/a/server.go", `package main
 		func main() {}`)
-	tg.tempFile("src/example/b/main.go", `// +build mytag
+	tg.tempFile("src/example/b/server.go", `// +build mytag
 
 		package main
 		func main() {}`)
@@ -2329,9 +2329,9 @@ func TestCgoPkgConfig(t *testing.T) {
 		t.Skipf("%s --atleast-pkgconfig-version 0.24: %v\n%s", pkgConfig, err, out)
 	}
 
-	// OpenBSD's pkg-config is strict about whitespace and only
+	// OpenBSD's pkg-Config is strict about whitespace and only
 	// supports backslash-escaped whitespace. It does not support
-	// quotes, which the normal freedesktop.org pkg-config does
+	// quotes, which the normal freedesktop.org pkg-Config does
 	// support. See https://man.openbsd.org/pkg-config.1
 	tg.tempFile("foo.pc", `
 Name: foo
@@ -2342,7 +2342,7 @@ Cflags: -Dhello=10 -Dworld=+32 -DDEFINED_FROM_PKG_CONFIG=hello\ world
 	tg.tempFile("foo.go", `package main
 
 /*
-#cgo pkg-config: foo
+#cgo pkg-Config: foo
 int value() {
 	return DEFINED_FROM_PKG_CONFIG;
 }
@@ -2960,10 +2960,10 @@ func TestGoGetUpdateUnknownProtocol(t *testing.T) {
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("git remote set-url: %v\n%s", err, out)
 	}
-	cmd = exec.Command("git", "config", "--local", "url.https://github.com/.insteadOf", "xyz://github.com/")
+	cmd = exec.Command("git", "Config", "--local", "url.https://github.com/.insteadOf", "xyz://github.com/")
 	cmd.Dir = repoDir
 	if out, err := cmd.CombinedOutput(); err != nil {
-		t.Fatalf("git config: %v\n%s", err, out)
+		t.Fatalf("git Config: %v\n%s", err, out)
 	}
 
 	// We need -f to ignore import comments.
@@ -3128,7 +3128,7 @@ func TestGoInstallShadowedGOPATH(t *testing.T) {
 
 	tg.tempDir("gopath1/src/test")
 	tg.tempDir("gopath2/src/test")
-	tg.tempFile("gopath2/src/test/main.go", "package main\nfunc main(){}\n")
+	tg.tempFile("gopath2/src/test/server.go", "package main\nfunc main(){}\n")
 
 	tg.cd(tg.path("gopath2/src/test"))
 	tg.runFail("install")
@@ -3727,7 +3727,7 @@ func TestFFLAGS(t *testing.T) {
 	defer tg.cleanup()
 	tg.parallel()
 
-	tg.tempFile("p/src/p/main.go", `package main
+	tg.tempFile("p/src/p/server.go", `package main
 		// #cgo FFLAGS: -no-such-fortran-flag
 		import "C"
 		func main() {}
@@ -3942,13 +3942,13 @@ func TestCgoFlagContainsSpace(t *testing.T) {
 
 	tg.makeTempdir()
 	tg.cd(tg.path("."))
-	tg.tempFile("main.go", `package main
+	tg.tempFile("server.go", `package main
 		// #cgo CFLAGS: -I"c flags"
 		// #cgo LDFLAGS: -L"ld flags"
 		import "C"
 		func main() {}
 	`)
-	tg.run("run", "-x", "main.go")
+	tg.run("run", "-x", "server.go")
 	tg.grepStderr(`"-I[^"]+c flags"`, "did not find quoted c flags")
 	tg.grepStderrNot(`"-I[^"]+c flags".*"-I[^"]+c flags"`, "found too many quoted c flags")
 	tg.grepStderr(`"-L[^"]+ld flags"`, "did not find quoted ld flags")
@@ -4031,8 +4031,8 @@ func TestBuildmodePIE(t *testing.T) {
 	defer tg.cleanup()
 	tg.parallel()
 
-	tg.tempFile("main.go", `package main; func main() { print("hello") }`)
-	src := tg.path("main.go")
+	tg.tempFile("server.go", `package main; func main() { print("hello") }`)
+	src := tg.path("server.go")
 	obj := tg.path("main")
 	tg.run("build", "-buildmode=pie", "-o", obj, src)
 
@@ -4087,13 +4087,13 @@ func TestExecBuildX(t *testing.T) {
 	tg.tempDir("cache")
 	tg.setenv("GOCACHE", tg.path("cache"))
 
-	// Before building our test main.go, ensure that an up-to-date copy of
+	// Before building our test server.go, ensure that an up-to-date copy of
 	// runtime/cgo is present in the cache. If it isn't, the 'go build' step below
 	// will fail with "can't open import". See golang.org/issue/29004.
 	tg.run("build", "runtime/cgo")
 
-	tg.tempFile("main.go", `package main; import "C"; func main() { print("hello") }`)
-	src := tg.path("main.go")
+	tg.tempFile("server.go", `package main; import "C"; func main() { print("hello") }`)
+	src := tg.path("server.go")
 	obj := tg.path("main")
 	tg.run("build", "-x", "-o", obj, src)
 	sh := tg.path("test.sh")
@@ -4195,8 +4195,8 @@ func TestUpxCompression(t *testing.T) {
 	defer tg.cleanup()
 	tg.parallel()
 
-	tg.tempFile("main.go", `package main; import "fmt"; func main() { fmt.Print("hello upx") }`)
-	src := tg.path("main.go")
+	tg.tempFile("server.go", `package main; import "fmt"; func main() { fmt.Print("hello upx") }`)
+	src := tg.path("server.go")
 	obj := tg.path("main")
 	tg.run("build", "-o", obj, src)
 
@@ -4282,7 +4282,7 @@ func TestIssue22531(t *testing.T) {
 	tg.makeTempdir()
 	tg.setenv("GOPATH", tg.tempdir)
 	tg.setenv("GOCACHE", tg.path("cache"))
-	tg.tempFile("src/m/main.go", "package main /* c1 */; func main() {}\n")
+	tg.tempFile("src/m/server.go", "package main /* c1 */; func main() {}\n")
 	tg.run("install", "-x", "m")
 	tg.run("list", "-f", "{{.Stale}}", "m")
 	tg.grepStdout("false", "reported m as stale after install")
@@ -4293,7 +4293,7 @@ func TestIssue22531(t *testing.T) {
 	// eventual binary. That caused the following install to
 	// be a no-op, thinking the gofmt binary was up-to-date,
 	// even though .Stale could see it was not.
-	tg.tempFile("src/m/main.go", "package main /* c2 */; func main() {}\n")
+	tg.tempFile("src/m/server.go", "package main /* c2 */; func main() {}\n")
 	tg.run("install", "-x", "m")
 	tg.run("list", "-f", "{{.Stale}}", "m")
 	tg.grepStdout("false", "reported m as stale after reinstall")
@@ -4557,7 +4557,7 @@ func TestInstallDeps(t *testing.T) {
 
 	tg.tempFile("src/p1/p1.go", "package p1\nvar X =  1\n")
 	tg.tempFile("src/p2/p2.go", "package p2\nimport _ \"p1\"\n")
-	tg.tempFile("src/main1/main.go", "package main\nimport _ \"p2\"\nfunc main() {}\n")
+	tg.tempFile("src/main1/server.go", "package main\nimport _ \"p2\"\nfunc main() {}\n")
 
 	tg.run("list", "-f={{.Target}}", "p1")
 	p1 := strings.TrimSpace(tg.getStdout())
@@ -4829,18 +4829,18 @@ func TestBadCgoDirectives(t *testing.T) {
 	tg.grepStderr("invalid flag in #cgo CFLAGS: -fplugin=foo.so", "did not reject -fplugin")
 
 	tg.tempFile("src/x/y.go", `package x
-		// #cgo pkg-config: -foo
+		// #cgo pkg-Config: -foo
 		import "C"
 	`)
 	tg.runFail("build", "x")
-	tg.grepStderr("invalid pkg-config package name: -foo", "did not reject pkg-config: -foo")
+	tg.grepStderr("invalid pkg-Config package name: -foo", "did not reject pkg-Config: -foo")
 
 	tg.tempFile("src/x/y.go", `package x
-		// #cgo pkg-config: @foo
+		// #cgo pkg-Config: @foo
 		import "C"
 	`)
 	tg.runFail("build", "x")
-	tg.grepStderr("invalid pkg-config package name: @foo", "did not reject pkg-config: -foo")
+	tg.grepStderr("invalid pkg-Config package name: @foo", "did not reject pkg-Config: -foo")
 
 	tg.tempFile("src/x/y.go", `package x
 		// #cgo CFLAGS: @foo
@@ -4893,20 +4893,20 @@ func TestTwoPkgConfigs(t *testing.T) {
 	defer tg.cleanup()
 	tg.parallel()
 	tg.tempFile("src/x/a.go", `package x
-		// #cgo pkg-config: --static a
+		// #cgo pkg-Config: --static a
 		import "C"
 	`)
 	tg.tempFile("src/x/b.go", `package x
-		// #cgo pkg-config: --static a
+		// #cgo pkg-Config: --static a
 		import "C"
 	`)
-	tg.tempFile("pkg-config.sh", `#!/bin/sh
-echo $* >>`+tg.path("pkg-config.out"))
-	tg.must(os.Chmod(tg.path("pkg-config.sh"), 0755))
+	tg.tempFile("pkg-Config.sh", `#!/bin/sh
+echo $* >>`+tg.path("pkg-Config.out"))
+	tg.must(os.Chmod(tg.path("pkg-Config.sh"), 0755))
 	tg.setenv("GOPATH", tg.path("."))
-	tg.setenv("PKG_CONFIG", tg.path("pkg-config.sh"))
+	tg.setenv("PKG_CONFIG", tg.path("pkg-Config.sh"))
 	tg.run("build", "x")
-	out, err := ioutil.ReadFile(tg.path("pkg-config.out"))
+	out, err := ioutil.ReadFile(tg.path("pkg-Config.out"))
 	tg.must(err)
 	out = bytes.TrimSpace(out)
 	want := "--cflags --static --static -- a a\n--libs --static --static -- a a"

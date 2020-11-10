@@ -584,7 +584,7 @@ func TestGoLookupIPOrderFallbackToFile(t *testing.T) {
 	}}
 	r := Resolver{PreferGo: true, Dial: fake.DialContext}
 
-	// Add a config that simulates no dns servers being available.
+	// Add a Config that simulates no dns servers being available.
 	conf, err := newResolvConfTest()
 	if err != nil {
 		t.Fatal(err)

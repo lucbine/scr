@@ -86,7 +86,7 @@ var sysdir = func() *sysDir {
 			[]string{
 				"networks",
 				"protocol",
-				"services",
+				"Services",
 			},
 		}
 	case "plan9":

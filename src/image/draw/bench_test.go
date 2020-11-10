@@ -22,7 +22,7 @@ var palette = color.Palette{
 }
 
 // bench benchmarks drawing src and mask images onto a dst image with the
-// given op and the color models to create those images from.
+// given op and the color Models to create those images from.
 // The created images' pixels are initialized to non-zero values.
 func bench(b *testing.B, dcm, scm, mcm color.Model, op Op) {
 	b.StopTimer()
@@ -67,7 +67,7 @@ func bench(b *testing.B, dcm, scm, mcm color.Model, op Op) {
 			}
 			dst = dst1
 		} else {
-			b.Fatal("unknown destination color model", dcm)
+			b.Fatal("unknown destination color Models", dcm)
 		}
 	}
 
@@ -156,7 +156,7 @@ func bench(b *testing.B, dcm, scm, mcm color.Model, op Op) {
 			Rect:           image.Rect(0, 0, srcw, srch),
 		}
 	default:
-		b.Fatal("unknown source color model", scm)
+		b.Fatal("unknown source color Models", scm)
 	}
 
 	var mask image.Image
@@ -177,7 +177,7 @@ func bench(b *testing.B, dcm, scm, mcm color.Model, op Op) {
 		}
 		mask = mask1
 	default:
-		b.Fatal("unknown mask color model", mcm)
+		b.Fatal("unknown mask color Models", mcm)
 	}
 
 	b.StartTimer()

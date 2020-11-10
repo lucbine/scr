@@ -58,7 +58,7 @@ func lookupProtocol(_ context.Context, name string) (int, error) {
 func (r *Resolver) dial(ctx context.Context, network, server string) (Conn, error) {
 	// Calling Dial here is scary -- we have to be sure not to
 	// dial a name that will require a DNS lookup, or Dial will
-	// call back here to translate it. The DNS config parser has
+	// call back here to translate it. The DNS Config parser has
 	// already checked that all the cfg.servers are IP
 	// addresses, which Dial will use without a DNS lookup.
 	var c Conn

@@ -574,7 +574,7 @@ type DNSConfigError struct {
 }
 
 func (e *DNSConfigError) Unwrap() error   { return e.Err }
-func (e *DNSConfigError) Error() string   { return "error reading DNS config: " + e.Err.Error() }
+func (e *DNSConfigError) Error() string   { return "error reading DNS Config: " + e.Err.Error() }
 func (e *DNSConfigError) Timeout() bool   { return false }
 func (e *DNSConfigError) Temporary() bool { return false }
 

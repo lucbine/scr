@@ -550,9 +550,9 @@ func (c *ctxtz) aclass(a *obj.Addr) int {
 			c.instoffset = a.Offset
 			if a.Sym.Type == objabi.STLSBSS {
 				if c.ctxt.Flag_shared {
-					return C_TLS_IE // initial exec model
+					return C_TLS_IE // initial exec Models
 				}
-				return C_TLS_LE // local exec model
+				return C_TLS_LE // local exec Models
 			}
 			return C_ADDR
 
@@ -3988,7 +3988,7 @@ func (c *ctxtz) asmout(p *obj.Prog, asm *[]byte) {
 		rel.Type = objabi.R_GOTPCREL
 		rel.Add = 2 + int64(rel.Siz)
 
-	case 94: // TLS local exec model
+	case 94: // TLS local exec Models
 		zRIL(_b, op_LARL, regtmp(p), (sizeRIL+sizeRXY+sizeRI)>>1, asm)
 		zRXY(op_LG, uint32(p.To.Reg), regtmp(p), 0, 0, asm)
 		zRI(op_BRC, 0xF, (sizeRI+8)>>1, asm)
@@ -4000,7 +4000,7 @@ func (c *ctxtz) asmout(p *obj.Prog, asm *[]byte) {
 		rel.Type = objabi.R_TLS_LE
 		rel.Add = 0
 
-	case 95: // TLS initial exec model
+	case 95: // TLS initial exec Models
 		// Assembly                   | Relocation symbol    | Done Here?
 		// --------------------------------------------------------------
 		// ear  %r11, %a0             |                      |

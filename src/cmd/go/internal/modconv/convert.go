@@ -20,7 +20,7 @@ import (
 	"golang.org/x/mod/semver"
 )
 
-// ConvertLegacyConfig converts legacy config to modfile.
+// ConvertLegacyConfig converts legacy Config to modfile.
 // The file argument is slash-delimited.
 func ConvertLegacyConfig(f *modfile.File, file string, data []byte) error {
 	i := strings.LastIndex(file, "/")
@@ -33,7 +33,7 @@ func ConvertLegacyConfig(f *modfile.File, file string, data []byte) error {
 		convert = Converters[file[j+1:]]
 	}
 	if convert == nil {
-		return fmt.Errorf("unknown legacy config file %s", file)
+		return fmt.Errorf("unknown legacy Config file %s", file)
 	}
 	mf, err := convert(file, data)
 	if err != nil {

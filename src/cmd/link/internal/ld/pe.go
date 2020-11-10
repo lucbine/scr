@@ -865,7 +865,7 @@ func (f *peFile) writeOptionalHeader(ctxt *Link) {
 		oh.DllCharacteristics = IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
 	}
 
-	// Mark as having awareness of terminal services, to avoid ancient compatibility hacks.
+	// Mark as having awareness of terminal Services, to avoid ancient compatibility hacks.
 	oh64.DllCharacteristics |= IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE
 	oh.DllCharacteristics |= IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE
 

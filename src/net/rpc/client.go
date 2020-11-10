@@ -182,7 +182,7 @@ func (call *Call) done() {
 }
 
 // NewClient returns a new Client to handle requests to the
-// set of services at the other end of the connection.
+// set of Services at the other end of the connection.
 // It adds a buffer to the write side of the connection so
 // the header and payload are sent as a unit.
 //

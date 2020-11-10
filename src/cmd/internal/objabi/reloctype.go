@@ -70,12 +70,12 @@ const (
 	R_PCREL
 	// R_TLS_LE, used on 386, amd64, and ARM, resolves to the offset of the
 	// thread-local symbol from the thread local base and is used to implement the
-	// "local exec" model for tls access (r.Sym is not set on intel platforms but is
+	// "local exec" Models for tls access (r.Sym is not set on intel platforms but is
 	// set to a TLS symbol -- runtime.tlsg -- in the linker when externally linking).
 	R_TLS_LE
 	// R_TLS_IE, used 386, amd64, and ARM resolves to the PC-relative offset to a GOT
 	// slot containing the offset from the thread-local symbol from the thread local
-	// base and is used to implemented the "initial exec" model for tls access (r.Sym
+	// base and is used to implemented the "initial exec" Models for tls access (r.Sym
 	// is not set on intel platforms but is set to a TLS symbol -- runtime.tlsg -- in
 	// the linker when externally linking).
 	R_TLS_IE
@@ -156,13 +156,13 @@ const (
 
 	// PPC64.
 
-	// R_POWER_TLS_LE is used to implement the "local exec" model for tls
+	// R_POWER_TLS_LE is used to implement the "local exec" Models for tls
 	// access. It resolves to the offset of the thread-local symbol from the
 	// thread pointer (R13) and inserts this value into the low 16 bits of an
 	// instruction word.
 	R_POWER_TLS_LE
 
-	// R_POWER_TLS_IE is used to implement the "initial exec" model for tls access. It
+	// R_POWER_TLS_IE is used to implement the "initial exec" Models for tls access. It
 	// relocates a D-form, DS-form instruction sequence like R_ADDRPOWER_DS. It
 	// inserts to the offset of GOT slot for the thread-local symbol from the TOC (the
 	// GOT slot is filled by the dynamic linker with the offset of the thread-local
@@ -171,8 +171,8 @@ const (
 
 	// R_POWER_TLS marks an X-form instruction such as "MOVD 0(R13)(R31*1), g" as
 	// accessing a particular thread-local symbol. It does not affect code generation
-	// but is used by the system linker when relaxing "initial exec" model code to
-	// "local exec" model code.
+	// but is used by the system linker when relaxing "initial exec" Models code to
+	// "local exec" Models code.
 	R_POWER_TLS
 
 	// R_ADDRPOWER_DS is similar to R_ADDRPOWER above, but assumes the second

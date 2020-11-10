@@ -1129,7 +1129,7 @@ func BenchmarkRunningGoProgram(b *testing.B) {
 	}
 	defer os.RemoveAll(tmpdir)
 
-	src := filepath.Join(tmpdir, "main.go")
+	src := filepath.Join(tmpdir, "server.go")
 	err = ioutil.WriteFile(src, []byte(benchmarkRunningGoProgram), 0666)
 	if err != nil {
 		b.Fatal(err)

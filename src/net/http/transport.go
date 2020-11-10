@@ -268,7 +268,7 @@ type Transport struct {
 	// ForceAttemptHTTP2 controls whether HTTP/2 is enabled when a non-zero
 	// Dial, DialTLS, or DialContext func or TLSClientConfig is provided.
 	// By default, use of any those fields conservatively disables HTTP/2.
-	// To use a custom dialer or TLS config and still attempt HTTP/2
+	// To use a custom dialer or TLS Config and still attempt HTTP/2
 	// upgrades, set this to true.
 	ForceAttemptHTTP2 bool
 }
@@ -368,7 +368,7 @@ func (t *Transport) onceSetNextProtoDefaults() {
 	}
 	if !t.ForceAttemptHTTP2 && (t.TLSClientConfig != nil || t.Dial != nil || t.DialContext != nil || t.hasCustomTLSDialer()) {
 		// Be conservative and don't automatically enable
-		// http2 if they've specified a custom TLS config or
+		// http2 if they've specified a custom TLS Config or
 		// custom dialers. Let them opt-in themselves via
 		// http2.ConfigureTransport so we don't surprise them
 		// by modifying their tls.Config. Issue 14275.

@@ -124,7 +124,7 @@ type clientTest struct {
 	// args, if not empty, contains a series of arguments for the
 	// command to run for the reference server.
 	args []string
-	// config, if not nil, contains a custom Config to use for this test.
+	// Config, if not nil, contains a custom Config to use for this test.
 	config *Config
 	// cert, if not empty, contains a DER-encoded certificate for the
 	// reference server.

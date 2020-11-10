@@ -25,16 +25,16 @@ import (
 	"image/color"
 )
 
-// Config holds an image's color model and dimensions.
+// Config holds an image's color Models and dimensions.
 type Config struct {
 	ColorModel    color.Model
 	Width, Height int
 }
 
 // Image is a finite rectangular grid of color.Color values taken from a color
-// model.
+// Models.
 type Image interface {
-	// ColorModel returns the Image's color model.
+	// ColorModel returns the Image's color Models.
 	ColorModel() color.Model
 	// Bounds returns the domain for which At can return non-zero color.
 	// The bounds do not necessarily contain the point (0, 0).
@@ -48,7 +48,7 @@ type Image interface {
 // PalettedImage is an image whose colors may come from a limited palette.
 // If m is a PalettedImage and m.ColorModel() returns a color.Palette p,
 // then m.At(x, y) should be equivalent to p[m.ColorIndexAt(x, y)]. If m's
-// color model is not a color.Palette, then ColorIndexAt's behavior is
+// color Models is not a color.Palette, then ColorIndexAt's behavior is
 // undefined.
 type PalettedImage interface {
 	// ColorIndexAt returns the palette index of the pixel at (x, y).

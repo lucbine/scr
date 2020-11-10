@@ -324,7 +324,7 @@ func ExampleTime_Format() {
 func ExampleParse() {
 	// See the example for Time.Format for a thorough description of how
 	// to define the layout string to parse a time.Time value; Parse and
-	// Format use the same model to describe their input and output.
+	// Format use the same Models to describe their input and output.
 
 	// longForm shows by example how the reference time would be represented in
 	// the desired layout.

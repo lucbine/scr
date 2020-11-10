@@ -110,7 +110,7 @@ func TestSectionsWithSameName(t *testing.T) {
 		}
 	}
 
-	goFile := filepath.Join(dir, "main.go")
+	goFile := filepath.Join(dir, "server.go")
 	if err := ioutil.WriteFile(goFile, []byte(goSource), 0444); err != nil {
 		t.Fatal(err)
 	}
@@ -193,7 +193,7 @@ func TestMinusRSymsWithSameName(t *testing.T) {
 		}
 	}
 
-	goFile := filepath.Join(dir, "main.go")
+	goFile := filepath.Join(dir, "server.go")
 	if err := ioutil.WriteFile(goFile, []byte(goSource), 0444); err != nil {
 		t.Fatal(err)
 	}

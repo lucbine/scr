@@ -821,7 +821,7 @@ func main() {
 	fmt.Printf("%q", os.Args)
 }
 `
-	src := filepath.Join(tmpdir, "main.go")
+	src := filepath.Join(tmpdir, "server.go")
 	err = ioutil.WriteFile(src, []byte(prog), 0666)
 	if err != nil {
 		t.Fatal(err)

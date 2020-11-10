@@ -30,7 +30,7 @@ const (
 
 var (
 	// Input files.
-	testMain       = filepath.Join(testdata, "main.go")
+	testMain       = filepath.Join(testdata, "server.go")
 	testTest       = filepath.Join(testdata, "test.go")
 	coverProfile   = filepath.Join(testdata, "profile.cov")
 	toolexecSource = filepath.Join(testdata, "toolexec.go")
@@ -90,7 +90,7 @@ func TestMain(m *testing.M) {
 
 	testTempDir = dir
 
-	tmpTestMain = filepath.Join(dir, "main.go")
+	tmpTestMain = filepath.Join(dir, "server.go")
 	coverInput = filepath.Join(dir, "test_line.go")
 	coverOutput = filepath.Join(dir, "test_cover.go")
 	htmlProfile = filepath.Join(dir, "html.cov")
@@ -165,7 +165,7 @@ func buildCover(t *testing.T) {
 //	replace the word LINE with the line number < testdata/test.go > testdata/test_line.go
 // 	go build -o testcover
 // 	testcover -mode=count -var=CoverTest -o ./testdata/test_cover.go testdata/test_line.go
-//	go run ./testdata/main.go ./testdata/test.go
+//	go run ./testdata/server.go ./testdata/test.go
 //
 func TestCover(t *testing.T) {
 	t.Parallel()
@@ -216,7 +216,7 @@ func TestCover(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// go run ./testdata/main.go ./testdata/test.go
+	// go run ./testdata/server.go ./testdata/test.go
 	cmd = exec.Command(testenv.GoToolPath(t), "run", tmpTestMain, coverOutput)
 	run(cmd, t)
 

@@ -1719,7 +1719,7 @@ func newm(fn func(), _p_ *p) {
 		// This is disabled on Plan 9. See golang.org/issue/22227.
 		//
 		// TODO: This may be unnecessary on Windows, which
-		// doesn't model thread creation off fork.
+		// doesn't Models thread creation off fork.
 		lock(&newmHandoff.lock)
 		if newmHandoff.haveTemplateThread == 0 {
 			throw("on a locked thread with no template thread")
@@ -3661,7 +3661,7 @@ func dolockOSThread() {
 // from an init function will cause the main function to be invoked on
 // that thread.
 //
-// A goroutine should call LockOSThread before calling OS services or
+// A goroutine should call LockOSThread before calling OS Services or
 // non-Go library functions that depend on per-thread state.
 func LockOSThread() {
 	if atomic.Load(&newmHandoff.haveTemplateThread) == 0 && GOOS != "plan9" {

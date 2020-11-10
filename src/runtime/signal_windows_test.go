@@ -32,7 +32,7 @@ func TestVectoredHandlerDontCrashOnLibrary(t *testing.T) {
 
 	// build go dll
 	dll := filepath.Join(dir, "testwinlib.dll")
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", dll, "--buildmode", "c-shared", "testdata/testwinlib/main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", dll, "--buildmode", "c-shared", "testdata/testwinlib/server.go")
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {
 		t.Fatalf("failed to build go library: %s\n%s", err, out)

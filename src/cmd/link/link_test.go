@@ -49,16 +49,16 @@ func main() {}
 	}
 	defer os.RemoveAll(tmpdir)
 
-	err = ioutil.WriteFile(filepath.Join(tmpdir, "main.go"), []byte(source), 0666)
+	err = ioutil.WriteFile(filepath.Join(tmpdir, "server.go"), []byte(source), 0666)
 	if err != nil {
-		t.Fatalf("failed to write main.go: %v\n", err)
+		t.Fatalf("failed to write server.go: %v\n", err)
 	}
 
-	cmd := exec.Command(testenv.GoToolPath(t), "tool", "compile", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "tool", "compile", "server.go")
 	cmd.Dir = tmpdir
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Fatalf("failed to compile main.go: %v, output: %s\n", err, out)
+		t.Fatalf("failed to compile server.go: %v, output: %s\n", err, out)
 	}
 
 	cmd = exec.Command(testenv.GoToolPath(t), "tool", "link", "main.o")
@@ -102,8 +102,8 @@ func TestIssue28429(t *testing.T) {
 	}
 
 	// Compile a main package.
-	write("main.go", "package main; func main() {}")
-	runGo("tool", "compile", "-p", "main", "main.go")
+	write("server.go", "package main; func main() {}")
+	runGo("tool", "compile", "-p", "main", "server.go")
 	runGo("tool", "pack", "c", "main.a", "main.o")
 
 	// Add an extra section with a short, non-.o name.
@@ -138,7 +138,7 @@ func TestUnresolved(t *testing.T) {
 	// by the runtime package.
 
 	write("go.mod", "module testunresolved\n")
-	write("main.go", `package main
+	write("server.go", `package main
 
 func main() {
         x()
@@ -243,7 +243,7 @@ func TestXFlag(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpdir)
 
-	src := filepath.Join(tmpdir, "main.go")
+	src := filepath.Join(tmpdir, "server.go")
 	err = ioutil.WriteFile(src, []byte(testXFlagSrc), 0666)
 	if err != nil {
 		t.Fatal(err)
@@ -269,7 +269,7 @@ func TestMacOSVersion(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpdir)
 
-	src := filepath.Join(tmpdir, "main.go")
+	src := filepath.Join(tmpdir, "server.go")
 	err = ioutil.WriteFile(src, []byte(testMacOSVersionSrc), 0666)
 	if err != nil {
 		t.Fatal(err)

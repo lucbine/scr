@@ -416,7 +416,7 @@ func UserCacheDir() (string, error) {
 //
 // On Unix systems, it returns $XDG_CONFIG_HOME as specified by
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html if
-// non-empty, else $HOME/.config.
+// non-empty, else $HOME/.Config.
 // On Darwin, it returns $HOME/Library/Application Support.
 // On Windows, it returns %AppData%.
 // On Plan 9, it returns $home/lib.
@@ -454,7 +454,7 @@ func UserConfigDir() (string, error) {
 			if dir == "" {
 				return "", errors.New("neither $XDG_CONFIG_HOME nor $HOME are defined")
 			}
-			dir += "/.config"
+			dir += "/.Config"
 		}
 	}
 

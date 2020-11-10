@@ -156,7 +156,7 @@ func YCbCrToRGB(y, cb, cr uint8) (uint8, uint8, uint8) {
 // YCbCr represents a fully opaque 24-bit Y'CbCr color, having 8 bits each for
 // one luma and two chroma components.
 //
-// JPEG, VP8, the MPEG family and other codecs use this color model. Such
+// JPEG, VP8, the MPEG family and other codecs use this color Models. Such
 // codecs often use the terms YUV and Y'CbCr interchangeably, but strictly
 // speaking, the term YUV applies only to analog video signals, and Y' (luma)
 // is Y (luminance) after applying gamma correction.

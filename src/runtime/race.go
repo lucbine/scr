@@ -31,7 +31,7 @@ func RaceErrors() int {
 // sections of code).
 // RaceAcquire establishes a happens-before relation with the preceding
 // RaceReleaseMerge on addr up to and including the last RaceRelease on addr.
-// In terms of the C memory model (C11 §5.1.2.4, §7.17.3),
+// In terms of the C memory Models (C11 §5.1.2.4, §7.17.3),
 // RaceAcquire is equivalent to atomic_load(memory_order_acquire).
 func RaceAcquire(addr unsafe.Pointer) {
 	raceacquire(addr)
@@ -42,7 +42,7 @@ func RaceAcquire(addr unsafe.Pointer) {
 // RaceRelease performs a release operation on addr that
 // can synchronize with a later RaceAcquire on addr.
 //
-// In terms of the C memory model, RaceRelease is equivalent to
+// In terms of the C memory Models, RaceRelease is equivalent to
 // atomic_store(memory_order_release).
 func RaceRelease(addr unsafe.Pointer) {
 	racerelease(addr)
@@ -53,7 +53,7 @@ func RaceRelease(addr unsafe.Pointer) {
 // RaceReleaseMerge is like RaceRelease, but also establishes a happens-before
 // relation with the preceding RaceRelease or RaceReleaseMerge on addr.
 //
-// In terms of the C memory model, RaceReleaseMerge is equivalent to
+// In terms of the C memory Models, RaceReleaseMerge is equivalent to
 // atomic_exchange(memory_order_release).
 func RaceReleaseMerge(addr unsafe.Pointer) {
 	racereleasemerge(addr)

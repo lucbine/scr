@@ -391,7 +391,7 @@ func EncodeAll(w io.Writer, g *GIF) error {
 		e.g.Config.Height = p.Y
 	} else if e.g.Config.ColorModel != nil {
 		if _, ok := e.g.Config.ColorModel.(color.Palette); !ok {
-			return errors.New("gif: GIF color model must be a color.Palette")
+			return errors.New("gif: GIF color Models must be a color.Palette")
 		}
 	}
 

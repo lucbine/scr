@@ -37,7 +37,7 @@ func ExampleScope() {
 	fset := token.NewFileSet()
 	var files []*ast.File
 	for _, file := range []struct{ name, input string }{
-		{"main.go", `
+		{"server.go", `
 package main
 import "fmt"
 func main() {
@@ -84,7 +84,7 @@ func Unused() { {}; {{ var x int; _ = x }} } // make sure empty block scopes get
 	// .  func temperature.FToC(f float64) temperature.Celsius
 	// .  func temperature.Unused()
 	// .  func temperature.main()
-	// .  main.go scope {
+	// .  server.go scope {
 	// .  .  package fmt
 	// .  .  function scope {
 	// .  .  .  var freezing temperature.Celsius

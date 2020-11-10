@@ -1358,7 +1358,7 @@ func populateMaps() {
 		"mlcp;":                            '\U00002ADB',
 		"mldr;":                            '\U00002026',
 		"mnplus;":                          '\U00002213',
-		"models;":                          '\U000022A7',
+		"Models;":                          '\U000022A7',
 		"mopf;":                            '\U0001D55E',
 		"mp;":                              '\U00002213',
 		"mscr;":                            '\U0001D4C2',

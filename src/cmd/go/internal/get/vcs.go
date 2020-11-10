@@ -181,13 +181,13 @@ var vcsGit = &vcsCmd{
 var scpSyntaxRe = lazyregexp.New(`^([a-zA-Z0-9_]+)@([a-zA-Z0-9._-]+):(.*)$`)
 
 func gitRemoteRepo(vcsGit *vcsCmd, rootDir string) (remoteRepo string, err error) {
-	cmd := "config remote.origin.url"
+	cmd := "Config remote.origin.url"
 	errParse := errors.New("unable to parse output of git " + cmd)
 	errRemoteOriginNotFound := errors.New("remote origin not found")
 	outb, err := vcsGit.run1(rootDir, cmd, nil, false)
 	if err != nil {
-		// if it doesn't output any message, it means the config argument is correct,
-		// but the config value itself doesn't exist
+		// if it doesn't output any message, it means the Config argument is correct,
+		// but the Config value itself doesn't exist
 		if outb != nil && len(outb) == 0 {
 			return "", errRemoteOriginNotFound
 		}
@@ -246,7 +246,7 @@ var vcsBzr = &vcsCmd{
 }
 
 func bzrRemoteRepo(vcsBzr *vcsCmd, rootDir string) (remoteRepo string, err error) {
-	outb, err := vcsBzr.runOutput(rootDir, "config parent_location")
+	outb, err := vcsBzr.runOutput(rootDir, "Config parent_location")
 	if err != nil {
 		return "", err
 	}

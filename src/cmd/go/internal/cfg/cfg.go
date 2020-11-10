@@ -160,7 +160,7 @@ func EnvFile() (string, error) {
 		return "", err
 	}
 	if dir == "" {
-		return "", fmt.Errorf("missing user-config dir")
+		return "", fmt.Errorf("missing user-Config dir")
 	}
 	return filepath.Join(dir, "go/env"), nil
 }

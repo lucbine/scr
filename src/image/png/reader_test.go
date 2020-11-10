@@ -105,12 +105,12 @@ var fakegAMAs = map[string]string{
 }
 
 // fakeIHDRUsings maps from filenames to fake IHDR "using" lines for our
-// approximation to the sng command-line tool. The PNG model is that
+// approximation to the sng command-line tool. The PNG Models is that
 // transparency (in the tRNS chunk) is separate to the color/grayscale/palette
-// color model (in the IHDR chunk). The Go model is that the concrete
+// color Models (in the IHDR chunk). The Go Models is that the concrete
 // image.Image type returned by png.Decode, such as image.RGBA (with all pixels
 // having 100% alpha) or image.NRGBA, encapsulates whether or not the image has
-// transparency. This map is a hack to work around the fact that the Go model
+// transparency. This map is a hack to work around the fact that the Go Models
 // can't otherwise discriminate PNG's "IHDR says color (with no alpha) but tRNS
 // says alpha" and "IHDR says color with alpha".
 var fakeIHDRUsings = map[string]string{
@@ -167,7 +167,7 @@ func sng(w io.WriteCloser, filename string, png image.Image) {
 		case cpm != nil:
 			io.WriteString(w, "    using color palette;\n")
 		default:
-			io.WriteString(w, "unknown PNG decoder color model\n")
+			io.WriteString(w, "unknown PNG decoder color Models\n")
 		}
 	}
 	io.WriteString(w, "}\n")
@@ -448,7 +448,7 @@ func TestPalettedDecodeConfig(t *testing.T) {
 		}
 		pal, ok := cfg.ColorModel.(color.Palette)
 		if !ok {
-			t.Errorf("%s: expected paletted color model", fn)
+			t.Errorf("%s: expected paletted color Models", fn)
 			continue
 		}
 		if pal == nil {

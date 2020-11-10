@@ -90,7 +90,7 @@ to -f '{{.ImportPath}}'. The struct being passed to the template is:
         CgoCXXFLAGS  []string // cgo: flags for C++ compiler
         CgoFFLAGS    []string // cgo: flags for Fortran compiler
         CgoLDFLAGS   []string // cgo: flags for linker
-        CgoPkgConfig []string // cgo: pkg-config names
+        CgoPkgConfig []string // cgo: pkg-Config names
 
         // Dependency information
         Imports      []string          // import paths used by this package

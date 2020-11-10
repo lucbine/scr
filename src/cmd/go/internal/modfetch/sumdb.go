@@ -193,7 +193,7 @@ func (c *dbClient) initBase() {
 }
 
 // ReadConfig reads the key from c.key
-// and otherwise reads the config (a latest tree head) from GOPATH/pkg/sumdb/<file>.
+// and otherwise reads the Config (a latest tree head) from GOPATH/pkg/sumdb/<file>.
 func (c *dbClient) ReadConfig(file string) (data []byte, err error) {
 	if file == "key" {
 		return []byte(c.key), nil

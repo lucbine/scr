@@ -167,13 +167,13 @@ func testGdbPython(t *testing.T, cgo bool) {
 
 	src := buf.Bytes()
 
-	err = ioutil.WriteFile(filepath.Join(dir, "main.go"), src, 0644)
+	err = ioutil.WriteFile(filepath.Join(dir, "server.go"), src, 0644)
 	if err != nil {
 		t.Fatalf("failed to create file: %v", err)
 	}
 	nLines := lastLine(src)
 
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {
@@ -201,7 +201,7 @@ func testGdbPython(t *testing.T, cgo bool) {
 	}
 	args = append(args,
 		"-ex", "set python print-stack full",
-		"-ex", "br main.go:15",
+		"-ex", "br server.go:15",
 		"-ex", "run",
 		"-ex", "echo BEGIN info goroutines\n",
 		"-ex", "info goroutines",
@@ -224,8 +224,8 @@ func testGdbPython(t *testing.T, cgo bool) {
 		"-ex", "echo BEGIN goroutine all bt\n",
 		"-ex", "goroutine all bt",
 		"-ex", "echo END\n",
-		"-ex", "clear main.go:15", // clear the previous break point
-		"-ex", fmt.Sprintf("br main.go:%d", nLines), // new break point at the end of main
+		"-ex", "clear server.go:15", // clear the previous break point
+		"-ex", fmt.Sprintf("br server.go:%d", nLines), // new break point at the end of main
 		"-ex", "c",
 		"-ex", "echo BEGIN goroutine 1 bt at the end\n",
 		"-ex", "goroutine 1 bt",
@@ -363,12 +363,12 @@ func TestGdbBacktrace(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	// Build the source code.
-	src := filepath.Join(dir, "main.go")
+	src := filepath.Join(dir, "server.go")
 	err = ioutil.WriteFile(src, []byte(backtraceSource), 0644)
 	if err != nil {
 		t.Fatalf("failed to create file: %v", err)
 	}
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {
@@ -438,12 +438,12 @@ func TestGdbAutotmpTypes(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	// Build the source code.
-	src := filepath.Join(dir, "main.go")
+	src := filepath.Join(dir, "server.go")
 	err = ioutil.WriteFile(src, []byte(autotmpTypeSource), 0644)
 	if err != nil {
 		t.Fatalf("failed to create file: %v", err)
 	}
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-gcflags=all=-N -l", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-gcflags=all=-N -l", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {
@@ -504,12 +504,12 @@ func TestGdbConst(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	// Build the source code.
-	src := filepath.Join(dir, "main.go")
+	src := filepath.Join(dir, "server.go")
 	err = ioutil.WriteFile(src, []byte(constsSource), 0644)
 	if err != nil {
 		t.Fatalf("failed to create file: %v", err)
 	}
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-gcflags=all=-N -l", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-gcflags=all=-N -l", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {
@@ -569,12 +569,12 @@ func TestGdbPanic(t *testing.T) {
 	defer os.RemoveAll(dir)
 
 	// Build the source code.
-	src := filepath.Join(dir, "main.go")
+	src := filepath.Join(dir, "server.go")
 	err = ioutil.WriteFile(src, []byte(panicSource), 0644)
 	if err != nil {
 		t.Fatalf("failed to create file: %v", err)
 	}
-	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "main.go")
+	cmd := exec.Command(testenv.GoToolPath(t), "build", "-o", "a.exe", "server.go")
 	cmd.Dir = dir
 	out, err := testenv.CleanCmdEnv(cmd).CombinedOutput()
 	if err != nil {

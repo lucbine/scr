@@ -66,7 +66,7 @@ func (wg *WaitGroup) Add(delta int) {
 	w := uint32(state)
 	if race.Enabled && delta > 0 && v == int32(delta) {
 		// The first increment must be synchronized with Wait.
-		// Need to model this as a read, because there can be
+		// Need to Models this as a read, because there can be
 		// several concurrent wg.counter transitions from 0.
 		race.Read(unsafe.Pointer(semap))
 	}
@@ -122,7 +122,7 @@ func (wg *WaitGroup) Wait() {
 		if atomic.CompareAndSwapUint64(statep, state, state+1) {
 			if race.Enabled && w == 0 {
 				// Wait must be synchronized with the first Add.
-				// Need to model this is as a write to race with the read in Add.
+				// Need to Models this is as a write to race with the read in Add.
 				// As a consequence, can do the write only for the first waiter,
 				// otherwise concurrent Waits will race with each other.
 				race.Write(unsafe.Pointer(semap))

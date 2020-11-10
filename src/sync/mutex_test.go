@@ -262,7 +262,7 @@ func BenchmarkMutexWorkSlack(b *testing.B) {
 }
 
 func BenchmarkMutexNoSpin(b *testing.B) {
-	// This benchmark models a situation where spinning in the mutex should be
+	// This benchmark Models a situation where spinning in the mutex should be
 	// non-profitable and allows to confirm that spinning does not do harm.
 	// To achieve this we create excess of goroutines most of which do local work.
 	// These goroutines yield during local work, so that switching from
@@ -296,7 +296,7 @@ func BenchmarkMutexNoSpin(b *testing.B) {
 }
 
 func BenchmarkMutexSpin(b *testing.B) {
-	// This benchmark models a situation where spinning in the mutex should be
+	// This benchmark Models a situation where spinning in the mutex should be
 	// profitable. To achieve this we create a goroutine per-proc.
 	// These goroutines access considerable amount of local data so that
 	// unnecessary rescheduling is penalized by cache misses.

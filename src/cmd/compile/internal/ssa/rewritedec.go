@@ -152,7 +152,7 @@ func rewriteValuedec_OpLoad_0(v *Value) bool {
 	}
 	// match: (Load <t> ptr mem)
 	// cond: t.IsString()
-	// result: (StringMake (Load <typ.BytePtr> ptr mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [config.PtrSize] ptr) mem))
+	// result: (StringMake (Load <typ.BytePtr> ptr mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [Config.PtrSize] ptr) mem))
 	for {
 		t := v.Type
 		mem := v.Args[1]
@@ -176,7 +176,7 @@ func rewriteValuedec_OpLoad_0(v *Value) bool {
 	}
 	// match: (Load <t> ptr mem)
 	// cond: t.IsSlice()
-	// result: (SliceMake (Load <t.Elem().PtrTo()> ptr mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [config.PtrSize] ptr) mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [2*config.PtrSize] ptr) mem))
+	// result: (SliceMake (Load <t.Elem().PtrTo()> ptr mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [Config.PtrSize] ptr) mem) (Load <typ.Int> (OffPtr <typ.IntPtr> [2*Config.PtrSize] ptr) mem))
 	for {
 		t := v.Type
 		mem := v.Args[1]
@@ -207,7 +207,7 @@ func rewriteValuedec_OpLoad_0(v *Value) bool {
 	}
 	// match: (Load <t> ptr mem)
 	// cond: t.IsInterface()
-	// result: (IMake (Load <typ.Uintptr> ptr mem) (Load <typ.BytePtr> (OffPtr <typ.BytePtrPtr> [config.PtrSize] ptr) mem))
+	// result: (IMake (Load <typ.Uintptr> ptr mem) (Load <typ.BytePtr> (OffPtr <typ.BytePtrPtr> [Config.PtrSize] ptr) mem))
 	for {
 		t := v.Type
 		mem := v.Args[1]
@@ -348,7 +348,7 @@ func rewriteValuedec_OpStore_0(v *Value) bool {
 		return true
 	}
 	// match: (Store dst (StringMake ptr len) mem)
-	// result: (Store {typ.Int} (OffPtr <typ.IntPtr> [config.PtrSize] dst) len (Store {typ.BytePtr} dst ptr mem))
+	// result: (Store {typ.Int} (OffPtr <typ.IntPtr> [Config.PtrSize] dst) len (Store {typ.BytePtr} dst ptr mem))
 	for {
 		mem := v.Args[2]
 		dst := v.Args[0]
@@ -374,7 +374,7 @@ func rewriteValuedec_OpStore_0(v *Value) bool {
 		return true
 	}
 	// match: (Store dst (SliceMake ptr len cap) mem)
-	// result: (Store {typ.Int} (OffPtr <typ.IntPtr> [2*config.PtrSize] dst) cap (Store {typ.Int} (OffPtr <typ.IntPtr> [config.PtrSize] dst) len (Store {typ.BytePtr} dst ptr mem)))
+	// result: (Store {typ.Int} (OffPtr <typ.IntPtr> [2*Config.PtrSize] dst) cap (Store {typ.Int} (OffPtr <typ.IntPtr> [Config.PtrSize] dst) len (Store {typ.BytePtr} dst ptr mem)))
 	for {
 		mem := v.Args[2]
 		dst := v.Args[0]
@@ -409,7 +409,7 @@ func rewriteValuedec_OpStore_0(v *Value) bool {
 		return true
 	}
 	// match: (Store dst (IMake itab data) mem)
-	// result: (Store {typ.BytePtr} (OffPtr <typ.BytePtrPtr> [config.PtrSize] dst) data (Store {typ.Uintptr} dst itab mem))
+	// result: (Store {typ.BytePtr} (OffPtr <typ.BytePtrPtr> [Config.PtrSize] dst) data (Store {typ.Uintptr} dst itab mem))
 	for {
 		mem := v.Args[2]
 		dst := v.Args[0]

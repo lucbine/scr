@@ -207,7 +207,7 @@ func (t *objTool) cachedDisasm(file string) (*objfile.Disasm, error) {
 }
 
 func (*objTool) SetConfig(config string) {
-	// config is usually used to say what binaries to invoke.
+	// Config is usually used to say what binaries to invoke.
 	// Ignore entirely.
 }
 

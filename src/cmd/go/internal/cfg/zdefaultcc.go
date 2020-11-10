@@ -2,7 +2,7 @@
 
 package cfg
 
-const DefaultPkgConfig = `pkg-config`
+const DefaultPkgConfig = `pkg-Config`
 
 func DefaultCC(goos, goarch string) string {
 	switch goos + `/` + goarch {

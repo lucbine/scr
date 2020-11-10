@@ -204,7 +204,7 @@ func genRulesSuffix(arch arch, suff string) {
 				suffix: fmt.Sprintf("_%s_%d", op, chunk),
 			}
 			fn.add(declf("b", "v.Block"))
-			fn.add(declf("config", "b.Func.Config"))
+			fn.add(declf("Config", "b.Func.Config"))
 			fn.add(declf("fe", "b.Func.fe"))
 			fn.add(declf("typ", "&b.Func.Config.Types"))
 			for _, rule := range rules[chunk:endchunk] {
@@ -236,7 +236,7 @@ func genRulesSuffix(arch arch, suff string) {
 	// Generate block rewrite function. There are only a few block types
 	// so we can make this one function with a switch.
 	fn = &Func{kind: "Block"}
-	fn.add(declf("config", "b.Func.Config"))
+	fn.add(declf("Config", "b.Func.Config"))
 	fn.add(declf("typ", "&b.Func.Config.Types"))
 
 	sw = &Switch{expr: exprf("b.Kind")}

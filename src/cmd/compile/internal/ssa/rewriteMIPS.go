@@ -693,7 +693,7 @@ func rewriteValueMIPS_OpAtomicAnd8_0(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (AtomicAnd8 ptr val mem)
-	// cond: !config.BigEndian
+	// cond: !Config.BigEndian
 	// result: (LoweredAtomicAnd (AND <typ.UInt32Ptr> (MOVWconst [^3]) ptr) (OR <typ.UInt32> (SLL <typ.UInt32> (ZeroExt8to32 val) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] ptr))) (NORconst [0] <typ.UInt32> (SLL <typ.UInt32> (MOVWconst [0xff]) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] ptr))))) mem)
 	for {
 		mem := v.Args[2]
@@ -742,7 +742,7 @@ func rewriteValueMIPS_OpAtomicAnd8_0(v *Value) bool {
 		return true
 	}
 	// match: (AtomicAnd8 ptr val mem)
-	// cond: config.BigEndian
+	// cond: Config.BigEndian
 	// result: (LoweredAtomicAnd (AND <typ.UInt32Ptr> (MOVWconst [^3]) ptr) (OR <typ.UInt32> (SLL <typ.UInt32> (ZeroExt8to32 val) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] (XORconst <typ.UInt32> [3] ptr)))) (NORconst [0] <typ.UInt32> (SLL <typ.UInt32> (MOVWconst [0xff]) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] (XORconst <typ.UInt32> [3] ptr)))))) mem)
 	for {
 		mem := v.Args[2]
@@ -869,7 +869,7 @@ func rewriteValueMIPS_OpAtomicOr8_0(v *Value) bool {
 	config := b.Func.Config
 	typ := &b.Func.Config.Types
 	// match: (AtomicOr8 ptr val mem)
-	// cond: !config.BigEndian
+	// cond: !Config.BigEndian
 	// result: (LoweredAtomicOr (AND <typ.UInt32Ptr> (MOVWconst [^3]) ptr) (SLL <typ.UInt32> (ZeroExt8to32 val) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] ptr))) mem)
 	for {
 		mem := v.Args[2]
@@ -901,7 +901,7 @@ func rewriteValueMIPS_OpAtomicOr8_0(v *Value) bool {
 		return true
 	}
 	// match: (AtomicOr8 ptr val mem)
-	// cond: config.BigEndian
+	// cond: Config.BigEndian
 	// result: (LoweredAtomicOr (AND <typ.UInt32Ptr> (MOVWconst [^3]) ptr) (SLL <typ.UInt32> (ZeroExt8to32 val) (SLLconst <typ.UInt32> [3] (ANDconst <typ.UInt32> [3] (XORconst <typ.UInt32> [3] ptr)))) mem)
 	for {
 		mem := v.Args[2]
@@ -6307,7 +6307,7 @@ func rewriteValueMIPS_OpMove_10(v *Value) bool {
 	}
 	// match: (Move [s] {t} dst src mem)
 	// cond: (s > 16 || t.(*types.Type).Alignment()%4 != 0)
-	// result: (LoweredMove [t.(*types.Type).Alignment()] dst src (ADDconst <src.Type> src [s-moveSize(t.(*types.Type).Alignment(), config)]) mem)
+	// result: (LoweredMove [t.(*types.Type).Alignment()] dst src (ADDconst <src.Type> src [s-moveSize(t.(*types.Type).Alignment(), Config)]) mem)
 	for {
 		s := v.AuxInt
 		t := v.Aux
@@ -8956,7 +8956,7 @@ func rewriteValueMIPS_OpZero_10(v *Value) bool {
 	}
 	// match: (Zero [s] {t} ptr mem)
 	// cond: (s > 16 || t.(*types.Type).Alignment()%4 != 0)
-	// result: (LoweredZero [t.(*types.Type).Alignment()] ptr (ADDconst <ptr.Type> ptr [s-moveSize(t.(*types.Type).Alignment(), config)]) mem)
+	// result: (LoweredZero [t.(*types.Type).Alignment()] ptr (ADDconst <ptr.Type> ptr [s-moveSize(t.(*types.Type).Alignment(), Config)]) mem)
 	for {
 		s := v.AuxInt
 		t := v.Aux
